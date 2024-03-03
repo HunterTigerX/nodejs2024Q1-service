@@ -1,9 +1,12 @@
 import { UUID } from 'crypto';
 
-export interface IUser {
-  id: UUID;
+export interface INewUser {
   login: string;
   password: string;
+}
+
+export interface IUser extends INewUser {
+  id: UUID;
   version: number; // integer number, increments on update
   createdAt: number; // timestamp of creation
   updatedAt: number; // timestamp of last update

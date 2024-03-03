@@ -15,6 +15,26 @@ export function notFound() {
   );
 }
 
+export function badBody() {
+  throw new HttpException(
+    'Your body does not contain required fields',
+    HttpStatus.BAD_REQUEST,
+  );
+}
+export function userExists() {
+  throw new HttpException(
+    'User with this login already exists in our DB. Please choose another login.',
+    HttpStatus.UNAUTHORIZED,
+  );
+}
+
+export function wrongPassword() {
+  throw new HttpException(
+    'Password mismatch. Old password is wrong',
+    HttpStatus.FORBIDDEN,
+  );
+}
+
 /*
 
 throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);

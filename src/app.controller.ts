@@ -17,6 +17,7 @@ import { AppService } from './app.service';
 import { checkUUID, notFound } from './errors/errors';
 import { db } from './main';
 import { ICreateUserDto, IUpdatePasswordDto } from './interfaces/interface';
+import { isPostUserValid } from './validation/validateObjects';
 
 @Controller()
 export class AppController {
@@ -37,15 +38,17 @@ export class AppController {
     return notFound();
   }
 
-  @Post()
-  addUserToTheDb(@Body() userData: ICreateUserDto) {
-    console.log('hello');
-    return this.appService.addUserToTheDb(userData);
+  @Post('user')
+  addUser(@Body() userData: ICreateUserDto) {
+    isPostUserValid(userData, 'create');
+    return this.appService.addUser(userData);
   }
 
-  @Put(':id')
-  changeUserInDb(@Param('id') id: UUID, @Body() userData: any) {
-    return this.appService.changeUserInDb(id, userData);
+  @Put('user/:id')
+  changeUserInDb(@Param('id') id: UUID, @Body() userData: IUpdatePasswordDto) {
+    checkUUID(id);
+    isPostUserValid(userData, 'update');
+    return this.appService.updateUser(id, userData);
   }
 
   @Delete(':id')

@@ -4,6 +4,9 @@ import {
   getUserByIdFromDb,
   getAllUsersFromDb,
 } from './controller/get/getRequestHandlers';
+import { addUserToTheDb } from './controller/post/postRequestHandlers';
+import { ICreateUserDto, IUpdatePasswordDto } from './interfaces/interface';
+import { updateUserInTheDb } from './controller/put/putRequestHandlers';
 @Injectable()
 export class AppService {
   getAllUsers() {
@@ -12,10 +15,13 @@ export class AppService {
   getUserById(id: UUID) {
     return getUserByIdFromDb(id);
   }
-  addUserToTheDb(userData) {
-    console.log('postRequest');
+  addUser(userData: ICreateUserDto) {
+    addUserToTheDb(userData);
   }
-  changeUserInDb(id: string, userData: any) {
+  updateUser(id: UUID, userData: IUpdatePasswordDto) {
+    updateUserInTheDb(id, userData);
+  }
+  changeUserInDb(userData: any) {
     // Logic to update a user by ID
   }
   deleteUser(id: string) {
