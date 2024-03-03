@@ -21,7 +21,9 @@ export function badBody() {
     HttpStatus.BAD_REQUEST, // 400
   );
 }
-export function somethingExists(string: 'user' | 'artist' | 'track') {
+export function somethingExists(
+  string: 'user' | 'artist' | 'track' | 'album' | 'favorites',
+) {
   let param = 'id';
   if (string === 'user') {
     param = 'login';

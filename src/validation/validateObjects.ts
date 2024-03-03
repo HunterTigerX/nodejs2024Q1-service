@@ -1,13 +1,22 @@
 import {
   ICreateUserDto,
   ITrack,
+  IAlbum,
+  IArtist,
+  IFavorites,
   IUpdatePasswordDto,
 } from 'src/interfaces/interface';
 import { badBody } from 'src/errorsAndMessages/errors';
 
 export function isPostDataValid(
-  obj: ICreateUserDto | IUpdatePasswordDto | ITrack,
-  status: 'create' | 'update' | 'track' | 'album' | 'fav',
+  obj:
+    | ICreateUserDto
+    | IUpdatePasswordDto
+    | ITrack
+    | IAlbum
+    | IArtist
+    | IFavorites,
+  status: 'create' | 'update' | 'track' | 'artist' | 'album' | 'fav',
 ): void {
   let isValid = false;
   if (status === 'create') {
