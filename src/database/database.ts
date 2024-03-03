@@ -1,5 +1,10 @@
 import { UUID, randomUUID } from 'crypto';
-import { notFound, userExists, wrongPassword } from '../errors/errors';
+import {
+  notFound,
+  userExists,
+  wrongPassword,
+  returnData,
+} from '../errorsAndMessages/errors';
 import {
   INewUser,
   IUser,
@@ -8,7 +13,6 @@ import {
   IFavorites,
   IUpdatePasswordDto,
 } from 'src/interfaces/interface';
-import { returnData } from 'src/controller/returnData/returnData';
 
 export class temporaryDB {
   private users: IUser[] = [];
@@ -62,6 +66,14 @@ export class temporaryDB {
       } else {
         wrongPassword();
       }
+    } else {
+      notFound();
+    }
+  }
+  removeUserFromDb(id: UUID) {
+    const user = this.getUserById(id);
+    if (user) {
+      this.users = this.users.filter((user) => user.id !== id);
     } else {
       notFound();
     }

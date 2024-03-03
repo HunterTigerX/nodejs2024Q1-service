@@ -1,5 +1,5 @@
 import { ICreateUserDto, IUpdatePasswordDto } from 'src/interfaces/interface';
-import { badBody } from 'src/errors/errors';
+import { badBody } from 'src/errorsAndMessages/errors';
 
 export function isPostUserValid(
   obj: ICreateUserDto | IUpdatePasswordDto,

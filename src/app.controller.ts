@@ -5,17 +5,11 @@ import {
   Post,
   Delete,
   Put,
-  Patch,
   Param,
   Body,
-  Res,
-  NotFoundException,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { checkUUID, notFound } from './errors/errors';
-import { db } from './main';
+import { checkUUID, notFound } from './errorsAndMessages/errors';
 import { ICreateUserDto, IUpdatePasswordDto } from './interfaces/interface';
 import { isPostUserValid } from './validation/validateObjects';
 
@@ -29,7 +23,7 @@ export class AppController {
   }
 
   @Get('user/:id')
-  getUserById(@Param('id') id: string | UUID, @Res() res: Response) {
+  getUserById(@Param('id') id: string | UUID) {
     checkUUID(id);
     const result = this.appService.getUserById(id as UUID);
     if (result) {
@@ -51,8 +45,9 @@ export class AppController {
     return this.appService.updateUser(id, userData);
   }
 
-  @Delete(':id')
+  @Delete('user/:id')
   deleteUser(@Param('id') id: UUID) {
+    checkUUID(id);
     return this.appService.deleteUser(id);
   }
 }

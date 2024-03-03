@@ -35,6 +35,17 @@ export function wrongPassword() {
   );
 }
 
+export function returnData(data: any, operation: 'create' | 'update') {
+  if (operation === 'create') {
+    throw new HttpException(data, HttpStatus.CREATED);
+  } else if (operation === 'update') {
+    throw new HttpException(data, HttpStatus.OK);
+  }
+}
+
+export function successDeletion() {
+  throw new HttpException('Success', HttpStatus.NO_CONTENT);
+}
 /*
 
 throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);

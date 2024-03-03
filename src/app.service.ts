@@ -3,10 +3,11 @@ import { UUID } from 'crypto';
 import {
   getUserByIdFromDb,
   getAllUsersFromDb,
-} from './controller/get/getRequestHandlers';
-import { addUserToTheDb } from './controller/post/postRequestHandlers';
+} from './controller/users/getRequestHandlers';
+import { addUserToTheDb } from './controller/users/postRequestHandlers';
 import { ICreateUserDto, IUpdatePasswordDto } from './interfaces/interface';
-import { updateUserInTheDb } from './controller/put/putRequestHandlers';
+import { updateUserInTheDb } from './controller/users/putRequestHandlers';
+import { removeUserFromDb } from './controller/users/deleteRequestHandlers';
 @Injectable()
 export class AppService {
   getAllUsers() {
@@ -21,10 +22,7 @@ export class AppService {
   updateUser(id: UUID, userData: IUpdatePasswordDto) {
     updateUserInTheDb(id, userData);
   }
-  changeUserInDb(userData: any) {
-    // Logic to update a user by ID
-  }
-  deleteUser(id: string) {
-    // Logic to delete a user by ID
+  deleteUser(id: UUID) {
+    removeUserFromDb(id);
   }
 }
