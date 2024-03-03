@@ -34,9 +34,9 @@ export interface IAlbum {
 }
 
 export interface IFavorites {
-  artists: UUID[]; // favorite artists ids
-  albums: UUID[]; // favorite albums ids
-  tracks: UUID[]; // favorite tracks ids
+  artists: IArtist[]; // favorite artists ids
+  albums: IAlbum[]; // favorite albums ids
+  tracks: ITrack[]; // favorite tracks ids
 }
 
 export interface ICreateUserDto {

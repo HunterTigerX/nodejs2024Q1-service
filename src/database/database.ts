@@ -8,6 +8,7 @@ import {
   noIdInDbWhenFav,
   successDeletion,
   checkUUID,
+  addedToFav,
 } from '../errorsAndMessages/errors';
 import {
   IUser,
@@ -130,17 +131,21 @@ export class temporaryDB {
       if (!doTrackExistInDb) {
         noIdInDbWhenFav(type);
       }
-      const doTrackExist = this.favorites.tracks.find((track) => track === id);
-      if (doTrackExist) {
+      const doTrackExistInFavs =
+        this.favorites.tracks.length !== 0
+          ? this.favorites.tracks.find((track) => track.id === id)
+          : undefined;
+      if (operation === 'add' && doTrackExistInFavs) {
         alreadyFav('track');
       } else {
         if (operation === 'remove') {
           this.favorites.tracks = this.favorites.tracks.filter(
-            (track) => track !== id,
+            (track) => track.id !== id,
           );
           successDeletion();
         } else if (operation === 'add') {
-          this.favorites.tracks.push(id);
+          this.favorites.tracks.push(doTrackExistInDb);
+          return addedToFav(this.favorites.tracks);
         }
       }
     }
@@ -149,19 +154,22 @@ export class temporaryDB {
       if (!doArtistExistInDb) {
         noIdInDbWhenFav(type);
       }
-      const doTrackExist = this.favorites.artists.find(
-        (artist) => artist === id,
-      );
-      if (doTrackExist) {
+      const doArtistExistInFavs =
+        this.favorites.artists.length !== 0
+          ? this.favorites.artists.find((artist) => artist.id === id)
+          : undefined;
+
+      if (operation === 'add' && doArtistExistInFavs) {
         alreadyFav('artist');
       } else {
         if (operation === 'remove') {
           this.favorites.artists = this.favorites.artists.filter(
-            (artist) => artist !== id,
+            (artist) => artist.id !== id,
           );
           successDeletion();
         } else if (operation === 'add') {
-          this.favorites.artists.push(id);
+          this.favorites.artists.push(doArtistExistInDb);
+          return addedToFav(this.favorites.artists);
         }
       }
     }
@@ -170,17 +178,21 @@ export class temporaryDB {
       if (!doAlbumExistInDb) {
         noIdInDbWhenFav(type);
       }
-      const doTrackExist = this.favorites.albums.find((album) => album === id);
-      if (doTrackExist) {
+      const doAlbumExistInFavs =
+        this.favorites.albums.length === 0
+          ? this.favorites.albums.find((album) => album.id === id)
+          : undefined;
+      if (operation === 'add' && doAlbumExistInFavs) {
         alreadyFav('album');
       } else {
         if (operation === 'remove') {
           this.favorites.albums = this.favorites.albums.filter(
-            (album) => album !== id,
+            (album) => album.id !== id,
           );
           successDeletion();
         } else if (operation === 'add') {
-          this.favorites.albums.push(id);
+          this.favorites.albums.push(doAlbumExistInDb);
+          return addedToFav(this.favorites.albums);
         }
       }
     }
@@ -190,7 +202,6 @@ export class temporaryDB {
   returnUserDataWithousPass(data: any, operation: 'create' | 'update') {
     const copy = JSON.parse(JSON.stringify(data));
     delete copy.password;
-    console.log('Check later!!!');
     // !!! Check in chat the format of the new user, login or full data withour pass. No pass is in video req.
     return returnData(copy, operation);
   }
@@ -297,6 +308,9 @@ export class temporaryDB {
           artist.id = null;
         }
       });
+      this.favorites.artists = this.favorites.artists.filter((artist) => {
+        artist.id !== id;
+      });
     }
     if (type !== 'album') {
       this.albums.forEach((album) => {
@@ -304,12 +318,18 @@ export class temporaryDB {
           album.artistId = null;
         }
       });
+      this.favorites.albums = this.favorites.albums.filter((album) => {
+        album.id !== id;
+      });
     }
     if (type !== 'track') {
       this.tracks.forEach((track) => {
         if (track.artistId === id) {
           track.artistId = null;
         }
+      });
+      this.favorites.tracks = this.favorites.tracks.filter((track) => {
+        track.id !== id;
       });
     }
   }

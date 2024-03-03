@@ -73,3 +73,7 @@ export function noTokenPresented() {
     HttpStatus.UNAUTHORIZED, // 401
   );
 }
+
+export function addedToFav(data: any) {
+  throw new HttpException(data, HttpStatus.CREATED); // 200
+}
