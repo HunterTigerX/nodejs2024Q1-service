@@ -1,9 +1,14 @@
-import { ICreateUserDto, IUpdatePasswordDto } from 'src/interfaces/interface';
+import {
+  ICreateUserDto,
+  ITrack,
+  IUpdatePasswordDto,
+} from 'src/interfaces/interface';
 import { badBody } from 'src/errorsAndMessages/errors';
+import { UUID } from 'crypto';
 
 export function isPostUserValid(
-  obj: ICreateUserDto | IUpdatePasswordDto,
-  status: 'create' | 'update',
+  obj: ICreateUserDto | IUpdatePasswordDto | ITrack,
+  status: 'create' | 'update' | 'track' | 'album' | 'fav',
 ): void {
   let isValid = false;
   if (status === 'create') {
@@ -12,6 +17,20 @@ export function isPostUserValid(
     }
   } else if (status === 'update') {
     if ('oldPassword' in obj && 'newPassword' in obj) {
+      isValid = true;
+    }
+  } else if (status === 'track') {
+    if (
+      'id' in obj &&
+      'name' in obj &&
+      typeof obj.name === 'string' &&
+      'artistId' in obj &&
+      (typeof obj.artistId === 'string' || null) &&
+      'albumId' in obj &&
+      (typeof obj.albumId === 'string' || null) &&
+      'duration' in obj &&
+      typeof obj.albumId === 'number'
+    ) {
       isValid = true;
     }
   }

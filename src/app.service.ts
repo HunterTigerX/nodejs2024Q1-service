@@ -12,10 +12,17 @@ import {
   getAllFavoritesFromDb,
   getFavoriteByArrayFromDb,
 } from './controller/handlers/getRequestHandlers';
-import { addUserToTheDb } from './controller/handlers/postRequestHandlers';
+import {
+  addUserToTheDb,
+  addTrackToTheDb,
+} from './controller/handlers/postRequestHandlers';
 import { updateUserInTheDb } from './controller/handlers/putRequestHandlers';
 import { removeUserFromDb } from './controller/handlers/deleteRequestHandlers';
-import { ICreateUserDto, IUpdatePasswordDto } from './interfaces/interface';
+import {
+  ICreateUserDto,
+  ITrack,
+  IUpdatePasswordDto,
+} from './interfaces/interface';
 @Injectable()
 export class AppService {
   getAllUsers() {
@@ -39,7 +46,9 @@ export class AppService {
   getTrackById(id: UUID) {
     return getTrackByIdFromDb(id);
   }
-
+  addTrack(trackData: ITrack) {
+    addTrackToTheDb(trackData);
+  }
   getAllArtists() {
     return getAllArtistsFromDb();
   }

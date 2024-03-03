@@ -10,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { checkUUID, notFound } from './errorsAndMessages/errors';
-import { ICreateUserDto, IUpdatePasswordDto } from './interfaces/interface';
+import {
+  ICreateUserDto,
+  ITrack,
+  IUpdatePasswordDto,
+} from './interfaces/interface';
 import { isPostUserValid } from './validation/validateObjects';
 
 @Controller()
@@ -21,7 +25,6 @@ export class AppController {
   getAllUsers() {
     return this.appService.getAllUsers();
   }
-
   @Get('user/:id')
   getUserById(@Param('id') id: string | UUID) {
     checkUUID(id);
@@ -31,20 +34,17 @@ export class AppController {
     }
     return notFound();
   }
-
   @Post('user')
   addUser(@Body() userData: ICreateUserDto) {
     isPostUserValid(userData, 'create');
     return this.appService.addUser(userData);
   }
-
   @Put('user/:id')
   changeUserInDb(@Param('id') id: UUID, @Body() userData: IUpdatePasswordDto) {
     checkUUID(id);
     isPostUserValid(userData, 'update');
     return this.appService.updateUser(id, userData);
   }
-
   @Delete('user/:id')
   deleteUser(@Param('id') id: UUID) {
     checkUUID(id);
@@ -55,7 +55,6 @@ export class AppController {
   getAllTracks() {
     return this.appService.getAllTracks();
   }
-
   @Get('track/:id')
   getTrackById(@Param('id') id: string | UUID) {
     checkUUID(id);
@@ -65,12 +64,16 @@ export class AppController {
     }
     return notFound();
   }
+  @Post('track')
+  addTrack(@Body() userData: ITrack) {
+    isPostUserValid(userData, 'track');
+    return this.appService.addTrack(userData);
+  }
 
   @Get('artist')
   getAllArtists() {
     return this.appService.getAllArtists();
   }
-
   @Get('artist/:id')
   getArtistById(@Param('id') id: string | UUID) {
     checkUUID(id);
@@ -85,7 +88,6 @@ export class AppController {
   getAllAlbums() {
     return this.appService.getAllAlbums();
   }
-
   @Get('album/:id')
   getAlbumById(@Param('id') id: string | UUID) {
     checkUUID(id);
@@ -96,12 +98,11 @@ export class AppController {
     return notFound();
   }
 
-  @Get('album')
+  @Get('favs')
   getAllFavorites() {
     return this.appService.getAllFavorites();
   }
-
-  @Get('album/:id')
+  @Get('favs/:id')
   getFavoriteByArray(@Param('id') id: string | UUID) {
     checkUUID(id);
     const result = this.appService.getFavoriteByArray(id as UUID);

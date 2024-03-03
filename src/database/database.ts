@@ -1,7 +1,7 @@
 import { UUID, randomUUID } from 'crypto';
 import {
   notFound,
-  userExists,
+  somethingExists,
   wrongPassword,
   returnData,
 } from '../errorsAndMessages/errors';
@@ -48,7 +48,7 @@ export class temporaryDB {
       this.returnUserDataWithousPass(newUser, 'create');
     } else {
       // user with this login exists in our db
-      userExists();
+      somethingExists('user');
     }
   }
   returnUserDataWithousPass(data: any, operation: 'create' | 'update') {
@@ -90,7 +90,19 @@ export class temporaryDB {
     const user = this.tracks.find((track) => track.id === id);
     return user;
   }
-
+  checkTrackById(id: UUID) {
+    const track = this.tracks.find((track) => track.id === id);
+    return track;
+  }
+  addTrack(data: ITrack) {
+    if (!this.checkTrackById(data.id)) {
+      this.tracks.push(data);
+      returnData(data, 'create');
+    } else {
+      // track with this id exists in our db
+      somethingExists('track');
+    }
+  }
   getAllArtists() {
     return this.artists;
   }
