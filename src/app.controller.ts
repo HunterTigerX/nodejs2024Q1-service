@@ -50,4 +50,64 @@ export class AppController {
     checkUUID(id);
     return this.appService.deleteUser(id);
   }
+
+  @Get('track')
+  getAllTracks() {
+    return this.appService.getAllTracks();
+  }
+
+  @Get('track/:id')
+  getTrackById(@Param('id') id: string | UUID) {
+    checkUUID(id);
+    const result = this.appService.getTrackById(id as UUID);
+    if (result) {
+      return result;
+    }
+    return notFound();
+  }
+
+  @Get('artist')
+  getAllArtists() {
+    return this.appService.getAllArtists();
+  }
+
+  @Get('artist/:id')
+  getArtistById(@Param('id') id: string | UUID) {
+    checkUUID(id);
+    const result = this.appService.getArtistById(id as UUID);
+    if (result) {
+      return result;
+    }
+    return notFound();
+  }
+
+  @Get('album')
+  getAllAlbums() {
+    return this.appService.getAllAlbums();
+  }
+
+  @Get('album/:id')
+  getAlbumById(@Param('id') id: string | UUID) {
+    checkUUID(id);
+    const result = this.appService.getAlbumById(id as UUID);
+    if (result) {
+      return result;
+    }
+    return notFound();
+  }
+
+  @Get('album')
+  getAllFavorites() {
+    return this.appService.getAllFavorites();
+  }
+
+  @Get('album/:id')
+  getFavoriteByArray(@Param('id') id: string | UUID) {
+    checkUUID(id);
+    const result = this.appService.getFavoriteByArray(id as UUID);
+    // if (result) {
+    //   return result;
+    // }
+    return notFound();
+  }
 }

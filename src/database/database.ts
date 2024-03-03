@@ -12,10 +12,15 @@ import {
   ITrack,
   IFavorites,
   IUpdatePasswordDto,
+  IAlbum,
 } from 'src/interfaces/interface';
 
 export class temporaryDB {
   private users: IUser[] = [];
+  private tracks: ITrack[] = [];
+  private artists: IArtist[] = [];
+  private albums: IAlbum[] = [];
+  private favorites: IFavorites[] = [];
 
   getAllUsers() {
     return this.users;
@@ -77,5 +82,36 @@ export class temporaryDB {
     } else {
       notFound();
     }
+  }
+  getAllTracks() {
+    return this.tracks;
+  }
+  getTrackById(id: UUID): ITrack | undefined {
+    const user = this.tracks.find((track) => track.id === id);
+    return user;
+  }
+
+  getAllArtists() {
+    return this.artists;
+  }
+  getArtistById(id: UUID): IArtist | undefined {
+    const artist = this.artists.find((artist) => artist.id === id);
+    return artist;
+  }
+
+  getAllAlbums() {
+    return this.albums;
+  }
+  getAlbumById(id: UUID): IAlbum | undefined {
+    const album = this.albums.find((album) => album.id === id);
+    return album;
+  }
+
+  getAllFavorites() {
+    return this.favorites;
+  }
+  getFavoriteByArray(artists: string[]) {
+    // const favorite = this.favorites.find((favorite) => favorite.id === id);
+    // return favorite;
   }
 }
