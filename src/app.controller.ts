@@ -16,7 +16,6 @@ import {
   ITrack,
   IUpdatePasswordDto,
   IAlbum,
-  IFavorites,
 } from './interfaces/interface';
 import { isPostDataValid } from './validation/validateObjects';
 
@@ -45,6 +44,7 @@ export class AppController {
     return this.appService.getAllFavorites();
   }
   // Get 5/5
+
   @Get('user/:id')
   getUserById(@Param('id') id: string | UUID) {
     checkUUID(id);
@@ -81,19 +81,11 @@ export class AppController {
     }
     return notFound();
   }
-  @Get('favs/:id')
-  getFavoriteByArray(@Param('id') id: string | UUID) {
-    checkUUID(id);
-    const result = this.appService.getFavoriteByArray(id as UUID);
-    // if (result) {
-    //   return result;
-    // }
-    return notFound();
-  }
-  // get id 4/5
+  // get id 4/4
+
   @Post('user')
   addUser(@Body() data: ICreateUserDto) {
-    isPostDataValid(data, 'create');
+    isPostDataValid(data, 'userCreate');
     return this.appService.addUser(data);
   }
   @Post('track')
@@ -106,37 +98,62 @@ export class AppController {
     isPostDataValid(data, 'artist');
     return this.appService.addArtist(data);
   }
-  @Post('artist')
+  @Post('album')
   addAlbum(@Body() data: IAlbum) {
-    isPostDataValid(data, 'artist');
+    isPostDataValid(data, 'album');
     return this.appService.addAlbum(data);
   }
-  // post 4/5
+  @Post('favs/track/:id')
+  addFavTrack(@Param('id') id: string | UUID) {
+    checkUUID(id);
+    return this.appService.addFav(id as UUID, 'track');
+  }
+  @Post('favs/album/:id')
+  addFavAlbum(@Param('id') id: string | UUID) {
+    checkUUID(id);
+    return this.appService.addFav(id as UUID, 'album');
+  }
+  @Post('favs/artist/:id')
+  addFavArtist(@Param('id') id: string | UUID) {
+    checkUUID(id);
+    return this.appService.addFav(id as UUID, 'artist');
+  }
+  // post 7/7
+
   @Put('user/:id')
   changeUserInDb(@Param('id') id: UUID, @Body() data: IUpdatePasswordDto) {
     checkUUID(id);
-    isPostDataValid(data, 'update');
+    isPostDataValid(data, 'userUpdate');
     return this.appService.updateUser(id, data);
   }
   @Put('track/:id')
   changeTrackInDb(@Param('id') id: UUID, @Body() data: ITrack) {
     checkUUID(id);
-    isPostDataValid(data, 'update');
+    if (data.id) {
+      checkUUID(id);
+    }
+    isPostDataValid(data, 'track');
     return this.appService.updateTrack(id, data);
   }
   @Put('artist/:id')
   changeArtistInDb(@Param('id') id: UUID, @Body() data: IArtist) {
     checkUUID(id);
-    isPostDataValid(data, 'update');
+    if (data.id) {
+      checkUUID(id);
+    }
+    isPostDataValid(data, 'artist');
     return this.appService.updateArtist(id, data);
   }
   @Put('album/:id')
   changeAlbumsInDb(@Param('id') id: UUID, @Body() data: IAlbum) {
     checkUUID(id);
-    isPostDataValid(data, 'update');
+    if (data.id) {
+      checkUUID(id);
+    }
+    isPostDataValid(data, 'album');
     return this.appService.updateAlbum(id, data);
   }
-  // put 4/5
+  // put 4/4
   @Delete('user/:id')
   deleteUser(@Param('id') id: UUID) {
     checkUUID(id);
@@ -157,5 +174,20 @@ export class AppController {
     checkUUID(id);
     return this.appService.deleteAlbum(id);
   }
-  // delete 4/5
+  @Delete('favs/track/:id')
+  deleteTrackFromFav(@Param('id') id: UUID) {
+    checkUUID(id);
+    return this.appService.deleteFromFav(id, 'track');
+  }
+  @Delete('favs/artist/:id')
+  deleteArtistFromFav(@Param('id') id: UUID) {
+    checkUUID(id);
+    return this.appService.deleteFromFav(id, 'artist');
+  }
+  @Delete('favs/album/:id')
+  deleteAlbumFromFav(@Param('id') id: UUID) {
+    checkUUID(id);
+    return this.appService.deleteFromFav(id, 'album');
+  }
+  // delete 4/7
 }

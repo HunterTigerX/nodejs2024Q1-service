@@ -1,12 +1,15 @@
-import { UUID, randomUUID } from 'crypto';
+import { UUID } from 'crypto';
 import {
   notFound,
   somethingExists,
   wrongPassword,
   returnData,
+  alreadyFav,
+  noIdInDbWhenFav,
+  successDeletion,
+  checkUUID,
 } from '../errorsAndMessages/errors';
 import {
-  INewUser,
   IUser,
   IArtist,
   ITrack,
@@ -20,7 +23,11 @@ export class temporaryDB {
   private tracks: ITrack[] = [];
   private artists: IArtist[] = [];
   private albums: IAlbum[] = [];
-  private favorites: IFavorites[] = [];
+  private favorites: IFavorites = {
+    artists: [], // favorite artists ids
+    albums: [], // favorite albums ids
+    tracks: [], // favorite tracks ids
+  };
 
   // check all of something from db is below 5/5
   getAllUsers() {
@@ -57,12 +64,8 @@ export class temporaryDB {
     const album = this.albums.find((album) => album.id === id);
     return album;
   }
-  getFavoriteByArray(artists: string[]) {
-    // const favorite = this.favorites.find((favorite) => favorite.id === id);
-    // return favorite;
-  }
 
-  // check if something is in the db is below 4/5
+  // check if something is in the db is below 4/4
   checkUserByLogin(login: string) {
     const user = this.users.find((user) => user.login === login);
     return user;
@@ -81,17 +84,8 @@ export class temporaryDB {
   }
 
   // add everything do db is below 5/5
-  addUser(data: INewUser) {
-    if (!this.checkUserByLogin(data.login)) {
-      const newUUID = randomUUID();
-      const timeStamp = Date.now();
-      const newUser: IUser = {
-        ...data,
-        version: 1,
-        id: newUUID,
-        createdAt: timeStamp,
-        updatedAt: timeStamp,
-      };
+  addUser(newUser: IUser) {
+    if (!this.checkUserByLogin(newUser.login)) {
       this.users.push(newUser);
       this.returnUserDataWithousPass(newUser, 'create');
     } else {
@@ -126,14 +120,70 @@ export class temporaryDB {
       somethingExists('album');
     }
   }
-  addFavs(newFavs: IFavorites) {
-    // if (!this.checkTrackById(data.id)) {
-    //     this.tracks.push(data);
-    //     returnData(data, 'create');
-    //   } else {
-    //     // track with this id exists in our db
-    //     somethingExists('track');
-    //   }
+  addRemoveFavs(
+    id: UUID,
+    type: 'track' | 'artist' | 'album',
+    operation: 'add' | 'remove',
+  ) {
+    if (type === 'track') {
+      const doTrackExistInDb = this.checkTrackById(id);
+      if (!doTrackExistInDb) {
+        noIdInDbWhenFav(type);
+      }
+      const doTrackExist = this.favorites.tracks.find((track) => track === id);
+      if (doTrackExist) {
+        alreadyFav('track');
+      } else {
+        if (operation === 'remove') {
+          this.favorites.tracks = this.favorites.tracks.filter(
+            (track) => track !== id,
+          );
+          successDeletion();
+        } else if (operation === 'add') {
+          this.favorites.tracks.push(id);
+        }
+      }
+    }
+    if (type === 'artist') {
+      const doArtistExistInDb = this.checkArtistById(id);
+      if (!doArtistExistInDb) {
+        noIdInDbWhenFav(type);
+      }
+      const doTrackExist = this.favorites.artists.find(
+        (artist) => artist === id,
+      );
+      if (doTrackExist) {
+        alreadyFav('artist');
+      } else {
+        if (operation === 'remove') {
+          this.favorites.artists = this.favorites.artists.filter(
+            (artist) => artist !== id,
+          );
+          successDeletion();
+        } else if (operation === 'add') {
+          this.favorites.artists.push(id);
+        }
+      }
+    }
+    if (type === 'album') {
+      const doAlbumExistInDb = this.checkAlbumById(id);
+      if (!doAlbumExistInDb) {
+        noIdInDbWhenFav(type);
+      }
+      const doTrackExist = this.favorites.albums.find((album) => album === id);
+      if (doTrackExist) {
+        alreadyFav('album');
+      } else {
+        if (operation === 'remove') {
+          this.favorites.albums = this.favorites.albums.filter(
+            (album) => album !== id,
+          );
+          successDeletion();
+        } else if (operation === 'add') {
+          this.favorites.albums.push(id);
+        }
+      }
+    }
   }
 
   // return data to user if needed is below
@@ -145,7 +195,7 @@ export class temporaryDB {
     return returnData(copy, operation);
   }
 
-  // update something is below 5/5
+  // update something is below 4/4
   updateUser(id: UUID, data: IUpdatePasswordDto) {
     const user = this.users.find((user) => user.id === id);
     if (user) {
@@ -164,37 +214,40 @@ export class temporaryDB {
     }
   }
   updateTrack(id: UUID, data: ITrack) {
-    let track = this.tracks.find((track) => track.id === id);
+    const track = this.tracks.find((track) => track.id === id);
     if (track) {
-      track = data;
+      track.id = data.id ? data.id : id;
+      track.albumId = data.albumId;
+      track.artistId = data.artistId;
+      track.duration = data.duration;
+      track.name = data.name;
+      returnData(track, 'update');
     } else {
       notFound();
     }
   }
   updateArtist(id: UUID, data: IArtist) {
-    let artist = this.artists.find((artist) => artist.id === id);
+    const artist = this.artists.find((artist) => artist.id === id);
     if (artist) {
-      artist = data;
+      artist.id = data.id ? data.id : id;
+      artist.name = data.name;
+      artist.grammy = data.grammy;
+      returnData(artist, 'update');
     } else {
       notFound();
     }
   }
   updateAlbum(id: UUID, data: IAlbum) {
-    let album = this.albums.find((album) => album.id === id);
+    const album = this.albums.find((album) => album.id === id);
     if (album) {
-      album = data;
+      album.id = data.id ? data.id : id;
+      album.name = data.name;
+      album.year = data.year;
+      album.artistId = data.artistId;
+      returnData(album, 'update');
     } else {
       notFound();
     }
-  }
-  updateFavs(id: UUID, data: IFavorites) {
-    console.log('update favs');
-    // let track = this.tracks.find((track) => track.id === id);
-    // if (track) {
-    //   track = data;
-    // } else {
-    //   notFound();
-    // }
   }
 
   // remove smth from db is below 5/5
@@ -202,6 +255,7 @@ export class temporaryDB {
     const user = this.getUserById(id);
     if (user) {
       this.users = this.users.filter((user) => user.id !== id);
+      successDeletion();
     } else {
       notFound();
     }
@@ -210,35 +264,53 @@ export class temporaryDB {
     const track = this.getTrackById(id);
     if (track) {
       this.tracks = this.tracks.filter((track) => track.id !== id);
+      this.clearAfterDeletion(id, 'track');
+      successDeletion();
     } else {
       notFound();
     }
   }
   removeAlbumFromDb(id: UUID) {
-    console.log('he');
-    //     const track = this.getTrackById(id);
-    //     if (track) {
-    //       this.tracks = this.tracks.filter((track) => track.id !== id);
-    //     } else {
-    //       notFound();
-    //     }
+    const album = this.getAlbumById(id);
+    if (album) {
+      this.albums = this.albums.filter((album) => album.id !== id);
+      this.clearAfterDeletion(id, 'album');
+      successDeletion();
+    } else {
+      notFound();
+    }
   }
   removeArtistFromDb(id: UUID) {
-    console.log('he');
-    //     const track = this.getTrackById(id);
-    //     if (track) {
-    //       this.tracks = this.tracks.filter((track) => track.id !== id);
-    //     } else {
-    //       notFound();
-    //     }
+    const artist = this.getArtistById(id);
+    if (artist) {
+      this.artists = this.artists.filter((artist) => artist.id !== id);
+      this.clearAfterDeletion(id, 'artist');
+      successDeletion();
+    } else {
+      notFound();
+    }
   }
-  removeFavsFromDb(id: UUID) {
-    console.log('he');
-    //     const track = this.getTrackById(id);
-    //     if (track) {
-    //       this.tracks = this.tracks.filter((track) => track.id !== id);
-    //     } else {
-    //       notFound();
-    //     }
+  clearAfterDeletion(id: UUID, type: 'artist' | 'track' | 'album') {
+    if (type !== 'artist') {
+      this.artists.forEach((artist) => {
+        if (artist.id === id) {
+          artist.id = null;
+        }
+      });
+    }
+    if (type !== 'album') {
+      this.albums.forEach((album) => {
+        if (album.artistId === id) {
+          album.artistId = null;
+        }
+      });
+    }
+    if (type !== 'track') {
+      this.tracks.forEach((track) => {
+        if (track.artistId === id) {
+          track.artistId = null;
+        }
+      });
+    }
   }
 }

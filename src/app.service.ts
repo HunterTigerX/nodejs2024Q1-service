@@ -1,130 +1,132 @@
 import { Injectable } from '@nestjs/common';
-import { UUID } from 'crypto';
-import {
-  getAllUsersFromDb,
-  getUserByIdFromDb,
-  getAllTracksFromDb,
-  getTrackByIdFromDb,
-  getAllArtistsFromDb,
-  getArtistByIdFromDb,
-  getAllAlbumsFromDb,
-  getAlbumByIdFromDb,
-  getAllFavoritesFromDb,
-  getFavoriteByArrayFromDb,
-} from './controller/handlers/getRequestHandlers';
-import {
-  addUserToTheDb,
-  addTrackToTheDb,
-  addAlbumToTheDb,
-  addArtistToTheDb,
-  addFavsToTheDb,
-} from './controller/handlers/postRequestHandlers';
-import {
-  updateUserInTheDb,
-  updateTrackInTheDb,
-  updateAlbumInTheDb,
-  updateArtistInTheDb,
-  updateFavInTheDb,
-} from './controller/handlers/putRequestHandlers';
-import {
-  removeUserFromDb,
-  removeTrackFromDb,
-  removeAlbumFromDb,
-  removeArtistFromDb,
-  removeFavsFromDb,
-} from './controller/handlers/deleteRequestHandlers';
+import { UUID, randomUUID } from 'crypto';
+import { db } from 'src/main';
 import {
   ICreateUserDto,
   ITrack,
   IUpdatePasswordDto,
   IAlbum,
   IArtist,
-  IFavorites,
+  IUser,
 } from './interfaces/interface';
 @Injectable()
 export class AppService {
   getAllUsers() {
-    return getAllUsersFromDb();
+    const users = db.getAllUsers();
+    return users;
   }
   getAllTracks() {
-    return getAllTracksFromDb();
+    const tracks = db.getAllTracks();
+    return tracks;
   }
   getAllArtists() {
-    return getAllArtistsFromDb();
+    const tracks = db.getAllArtists();
+    return tracks;
   }
   getAllAlbums() {
-    return getAllAlbumsFromDb();
+    const albums = db.getAllAlbums();
+    return albums;
   }
   getAllFavorites() {
-    return getAllFavoritesFromDb();
+    const favorites = db.getAllFavorites();
+    return favorites;
   }
   // get all - 5/5
 
   getUserById(id: UUID) {
-    return getUserByIdFromDb(id);
+    const user = db.getUserById(id);
+    return user;
   }
   getTrackById(id: UUID) {
-    return getTrackByIdFromDb(id);
+    const track = db.getTrackById(id);
+    return track;
   }
   getAlbumById(id: UUID) {
-    return getAlbumByIdFromDb(id);
+    const album = db.getAlbumById(id);
+    return album;
   }
   getArtistById(id: UUID) {
-    return getArtistByIdFromDb(id);
+    const artist = db.getArtistById(id);
+    return artist;
   }
-  getFavoriteByArray(id: UUID) {
-    return getFavoriteByArrayFromDb(['asdasd']);
-  }
-  // get by - 5/5
+  // get by - 4/4
 
-  addUser(userData: ICreateUserDto) {
-    addUserToTheDb(userData);
+  addUser(data: ICreateUserDto) {
+    const newUUID = randomUUID();
+    const timeStamp = Date.now();
+    const newUser: IUser = {
+      login: data.login,
+      password: data.password,
+      version: 1,
+      id: newUUID,
+      createdAt: timeStamp,
+      updatedAt: timeStamp,
+    };
+    db.addUser(newUser);
   }
-  addTrack(trackData: ITrack) {
-    addTrackToTheDb(trackData);
+  addTrack(data: ITrack) {
+    const newUUID = randomUUID();
+    const newTrack = {
+      id: newUUID,
+      name: data.name,
+      artistId: data.artistId,
+      albumId: data.albumId,
+      duration: data.duration,
+    };
+    db.addTrack(newTrack);
   }
-  addArtist(artistData: IArtist) {
-    addArtistToTheDb(artistData);
+  addArtist(data: IArtist) {
+    const newUUID = randomUUID();
+    const newArtist = {
+      id: newUUID,
+      name: data.name,
+      grammy: data.grammy,
+    };
+    db.addArtist(newArtist);
   }
-  addAlbum(albumData: IAlbum) {
-    addAlbumToTheDb(albumData);
+  addAlbum(data: IAlbum) {
+    const newUUID = randomUUID();
+    const newAlbum = {
+      id: newUUID,
+      name: data.name,
+      year: data.year,
+      artistId: data.artistId,
+    };
+    db.addAlbum(newAlbum);
   }
-  addFavs(favData: IFavorites) {
-    addFavsToTheDb(favData);
+  addFav(id: UUID, type: 'track' | 'album' | 'artist') {
+    db.addRemoveFavs(id, type, 'add');
   }
   // add - 5/5
 
-  updateUser(id: UUID, userData: IUpdatePasswordDto) {
-    updateUserInTheDb(id, userData);
+  updateUser(id: UUID, data: IUpdatePasswordDto) {
+    db.updateUser(id, data);
   }
-  updateTrack(id: UUID, userData: ITrack) {
-    updateTrackInTheDb(id, userData);
+  updateTrack(id: UUID, data: ITrack) {
+    db.updateTrack(id, data);
   }
-  updateArtist(id: UUID, userData: IArtist) {
-    updateArtistInTheDb(id, userData);
+  updateArtist(id: UUID, data: IArtist) {
+    db.updateArtist(id, data);
   }
-  updateAlbum(id: UUID, userData: IAlbum) {
-    updateAlbumInTheDb(id, userData);
+  updateAlbum(id: UUID, data: IAlbum) {
+    db.updateAlbum(id, data);
   }
-  updateFavs(id: UUID, userData: IFavorites) {
-    updateFavInTheDb(id, userData);
-  }
-  // update - 5/5
+  // update - 4/4
 
   deleteUser(id: UUID) {
-    removeUserFromDb(id);
+    db.removeUserFromDb(id);
   }
   deleteTrack(id: UUID) {
-    removeTrackFromDb(id);
+    db.removeTrackFromDb(id);
   }
   deleteArtist(id: UUID) {
-    removeArtistFromDb(id);
+    db.removeArtistFromDb(id);
   }
   deleteAlbum(id: UUID) {
-    removeAlbumFromDb(id);
+    db.removeAlbumFromDb(id);
   }
-  deleteFavorite(id: UUID) {
-    removeFavsFromDb(id);
+  deleteFromFav(id: UUID, type: 'track' | 'artist' | 'album') {
+    db.addRemoveFavs(id, type, 'remove');
   }
   // delete - 5/5
 }

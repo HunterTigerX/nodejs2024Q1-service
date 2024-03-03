@@ -52,3 +52,24 @@ export function returnData(data: any, operation: 'create' | 'update') {
 export function successDeletion() {
   throw new HttpException('Success', HttpStatus.NO_CONTENT); // 204
 }
+
+export function alreadyFav(operation: 'artist' | 'album' | 'track') {
+  throw new HttpException(
+    `${operation} with this id is already in favorites`,
+    HttpStatus.UNPROCESSABLE_ENTITY,
+  ); // 422
+}
+
+export function noIdInDbWhenFav(operation: 'artist' | 'album' | 'track') {
+  throw new HttpException(
+    `There is no ${operation} with this id in our database`,
+    HttpStatus.UNPROCESSABLE_ENTITY,
+  ); // 422
+}
+
+export function noTokenPresented() {
+  throw new HttpException(
+    `No token was presented`,
+    HttpStatus.UNAUTHORIZED, // 401
+  );
+}
