@@ -4,9 +4,8 @@ import {
   IUpdatePasswordDto,
 } from 'src/interfaces/interface';
 import { badBody } from 'src/errorsAndMessages/errors';
-import { UUID } from 'crypto';
 
-export function isPostUserValid(
+export function isPostDataValid(
   obj: ICreateUserDto | IUpdatePasswordDto | ITrack,
   status: 'create' | 'update' | 'track' | 'album' | 'fav',
 ): void {

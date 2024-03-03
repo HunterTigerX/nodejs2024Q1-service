@@ -15,7 +15,7 @@ import {
   ITrack,
   IUpdatePasswordDto,
 } from './interfaces/interface';
-import { isPostUserValid } from './validation/validateObjects';
+import { isPostDataValid } from './validation/validateObjects';
 
 @Controller()
 export class AppController {
@@ -36,13 +36,13 @@ export class AppController {
   }
   @Post('user')
   addUser(@Body() userData: ICreateUserDto) {
-    isPostUserValid(userData, 'create');
+    isPostDataValid(userData, 'create');
     return this.appService.addUser(userData);
   }
   @Put('user/:id')
   changeUserInDb(@Param('id') id: UUID, @Body() userData: IUpdatePasswordDto) {
     checkUUID(id);
-    isPostUserValid(userData, 'update');
+    isPostDataValid(userData, 'update');
     return this.appService.updateUser(id, userData);
   }
   @Delete('user/:id')
@@ -66,8 +66,19 @@ export class AppController {
   }
   @Post('track')
   addTrack(@Body() userData: ITrack) {
-    isPostUserValid(userData, 'track');
+    isPostDataValid(userData, 'track');
     return this.appService.addTrack(userData);
+  }
+  @Put('track/:id')
+  changeTrackInDb(@Param('id') id: UUID, @Body() trackData: ITrack) {
+    checkUUID(id);
+    isPostDataValid(trackData, 'update');
+    return this.appService.updateTrack(id, trackData);
+  }
+  @Delete('track/:id')
+  deleteTrack(@Param('id') id: UUID) {
+    checkUUID(id);
+    return this.appService.deleteTrack(id);
   }
 
   @Get('artist')

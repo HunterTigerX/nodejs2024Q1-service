@@ -16,8 +16,14 @@ import {
   addUserToTheDb,
   addTrackToTheDb,
 } from './controller/handlers/postRequestHandlers';
-import { updateUserInTheDb } from './controller/handlers/putRequestHandlers';
-import { removeUserFromDb } from './controller/handlers/deleteRequestHandlers';
+import {
+  updateUserInTheDb,
+  updateTrackInTheDb,
+} from './controller/handlers/putRequestHandlers';
+import {
+  removeUserFromDb,
+  removeTrackFromDb,
+} from './controller/handlers/deleteRequestHandlers';
 import {
   ICreateUserDto,
   ITrack,
@@ -48,6 +54,12 @@ export class AppService {
   }
   addTrack(trackData: ITrack) {
     addTrackToTheDb(trackData);
+  }
+  updateTrack(id: UUID, userData: ITrack) {
+    updateTrackInTheDb(id, userData);
+  }
+  deleteTrack(id: UUID) {
+    removeTrackFromDb(id);
   }
   getAllArtists() {
     return getAllArtistsFromDb();

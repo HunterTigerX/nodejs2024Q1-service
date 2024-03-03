@@ -103,6 +103,22 @@ export class temporaryDB {
       somethingExists('track');
     }
   }
+  updateTrack(id: UUID, data: ITrack) {
+    let track = this.tracks.find((track) => track.id === id);
+    if (track) {
+      track = data;
+    } else {
+      notFound();
+    }
+  }
+  removeTrackFromDb(id: UUID) {
+    const track = this.getTrackById(id);
+    if (track) {
+      this.tracks = this.tracks.filter((track) => track.id !== id);
+    } else {
+      notFound();
+    }
+  }
   getAllArtists() {
     return this.artists;
   }
