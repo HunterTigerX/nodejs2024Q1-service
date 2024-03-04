@@ -3,7 +3,7 @@ import { isUUID } from 'class-validator';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export function checkUUID(id: string | UUID) {
-  if (!isUUID(id)) {
+  if (!isUUID(id, 4)) {
     throw new HttpException('ID is not in UUID format', HttpStatus.BAD_REQUEST); // 400
   }
 }

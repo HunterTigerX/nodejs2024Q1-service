@@ -7,17 +7,16 @@ import {
   alreadyFav,
   noIdInDbWhenFav,
   successDeletion,
-  checkUUID,
   addedToFav,
 } from '../errorsAndMessages/errors';
+import { IAlbum } from 'src/api/album/interface/album.interface';
+import { IArtist } from 'src/api/artist/interface/artist.interface';
+import { IFavorites } from 'src/api/favorites/interface/favorites.interface';
+import { ITrack } from 'src/api/track/interface/track.interface';
 import {
   IUser,
-  IArtist,
-  ITrack,
-  IFavorites,
   IUpdatePasswordDto,
-  IAlbum,
-} from 'src/interfaces/interface';
+} from 'src/api/user/interface/user.interface';
 
 export class temporaryDB {
   private users: IUser[] = [];
@@ -285,6 +284,7 @@ export class temporaryDB {
     const album = this.getAlbumById(id);
     if (album) {
       this.albums = this.albums.filter((album) => album.id !== id);
+      console.log(this.tracks);
       this.clearAfterDeletion(id, 'album');
       successDeletion();
     } else {
@@ -302,22 +302,36 @@ export class temporaryDB {
     }
   }
   clearAfterDeletion(id: UUID, type: 'artist' | 'track' | 'album') {
-    if (type !== 'artist') {
-      this.artists.forEach((artist) => {
-        if (artist.id === id) {
-          artist.id = null;
+    // When album was deleted we remove album from track data
+    // When artist was deleted we remove artist from track and album
+    // When track data was deleted we do nothing
+    console.log(this.tracks);
+    if (type === 'album') {
+      this.tracks.forEach((track) => {
+        if (track.albumId === id) {
+          track.albumId = null;
         }
       });
-      this.favorites.artists = this.favorites.artists.filter((artist) => {
-        artist.id !== id;
-      });
     }
-    if (type !== 'album') {
+    if (type === 'artist') {
       this.albums.forEach((album) => {
         if (album.artistId === id) {
           album.artistId = null;
         }
       });
+      this.tracks.forEach((track) => {
+        if (track.artistId === id) {
+          track.artistId = null;
+        }
+      });
+    }
+
+    if (type !== 'artist') {
+      this.favorites.artists = this.favorites.artists.filter((artist) => {
+        artist.id !== id;
+      });
+    }
+    if (type !== 'album') {
       this.favorites.albums = this.favorites.albums.filter((album) => {
         album.id !== id;
       });
@@ -332,5 +346,6 @@ export class temporaryDB {
         track.id !== id;
       });
     }
+    console.log(this.tracks);
   }
 }
