@@ -10,7 +10,7 @@ import {
 import { UUID } from 'crypto';
 import { ArtistService } from 'src/api/artist/artist.service';
 import { checkUUID, notFound } from 'src/errorsAndMessages/errors';
-import { isArtistDataValid } from './dto/create-artist.dto';
+import { isArtistDataValid } from './object-validation/validate-artist';
 import { IArtist } from './interface/artist.interface';
 
 @Controller()

@@ -284,7 +284,6 @@ export class temporaryDB {
     const album = this.getAlbumById(id);
     if (album) {
       this.albums = this.albums.filter((album) => album.id !== id);
-      console.log(this.tracks);
       this.clearAfterDeletion(id, 'album');
       successDeletion();
     } else {
@@ -305,7 +304,6 @@ export class temporaryDB {
     // When album was deleted we remove album from track data
     // When artist was deleted we remove artist from track and album
     // When track data was deleted we do nothing
-    console.log(this.tracks);
     if (type === 'album') {
       this.tracks.forEach((track) => {
         if (track.albumId === id) {
@@ -346,6 +344,5 @@ export class temporaryDB {
         track.id !== id;
       });
     }
-    console.log(this.tracks);
   }
 }

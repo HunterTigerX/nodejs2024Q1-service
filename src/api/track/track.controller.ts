@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { checkUUID, notFound } from 'src/errorsAndMessages/errors';
-import { isTrackDataValid } from './dto/create-track.dto';
+import { isTrackDataValid } from './object-validation/track-validation';
 import { ITrack } from './interface/track.interface';
 import { TrackService } from './track.service';
 

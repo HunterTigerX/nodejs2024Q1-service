@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UUID, randomUUID } from 'crypto';
 import { IAlbum } from './interface/album.interface';
 import { db } from 'src/main';
-import { isAlbumDataValid } from './dto/create-album.dto';
+import { isAlbumDataValid } from './object-validation/validate-album';
 import { notFound } from 'src/errorsAndMessages/errors';
 @Injectable()
 export class AlbumService {
