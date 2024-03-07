@@ -85,13 +85,8 @@ export class temporaryDB {
 
   // add everything do db is below 5/5
   addUser(newUser: IUser) {
-    if (!this.checkUserByLogin(newUser.login)) {
-      this.users.push(newUser);
-      this.returnUserDataWithousPass(newUser, 'create');
-    } else {
-      // user with this login exists in our db
-      somethingExists('user');
-    }
+    this.users.push(newUser);
+    this.returnUserDataWithousPass(newUser, 'create');
   }
   addTrack(data: ITrack) {
     if (!this.checkTrackById(data.id)) {
