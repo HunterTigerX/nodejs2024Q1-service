@@ -2,7 +2,7 @@ version: '3'
 services:
   postgresql:
     build: ./postgresql
-    image: my-postgres-image
+    image: postgres-huntertigerx
     ports:
       - "5432:5432"
 
@@ -10,6 +10,6 @@ services:
     build: 
           context: .
           dockerfile: Dockerfile
-    image: my-application-image
+    image: homelibrary-huntertigerx
     ports:
       - "4000:4000"
