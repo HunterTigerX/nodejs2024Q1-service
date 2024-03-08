@@ -8,10 +8,10 @@ import {
   Body,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { checkUUID, notFound } from 'src/errorsAndMessages/errors';
 import { ICreateUserDto, IUpdatePasswordDto } from './interface/user.interface';
 import { UserService } from './user.service';
 import { isUserDataValid } from './object-validation/user-validation';
+import { checkUUID, notFound } from 'src/errorsAndMessages/errors';
 
 @Controller()
 export class UserController {
