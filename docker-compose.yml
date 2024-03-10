@@ -4,7 +4,7 @@ services:
     build: ./postgresql
     image: postgres-huntertigerx
     ports:
-      - "5432:5432"
+      - "4000:4000"
 
   myapplication:
     build: 
@@ -12,4 +12,4 @@ services:
           dockerfile: Dockerfile
     image: homelibrary-huntertigerx
     ports:
-      - "4000:4000"
+      - "5000:5000"

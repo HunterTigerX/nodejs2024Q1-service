@@ -17,9 +17,10 @@ async function bootstrap() {
       version: '1.0.0',
       description: 'Home music library service',
     },
-    host: 'localhost:4000',
+    host: 'localhost:5000',
     basePath: '/docs',
   };
+
   const options = {
     swaggerDefinition,
     apis: ['doc/api.yaml'],
@@ -29,7 +30,7 @@ async function bootstrap() {
 
   app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  await app.listen(4000);
+  await app.listen(5000);
 }
 export const db = new temporaryDB();
 bootstrap();

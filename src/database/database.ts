@@ -106,15 +106,6 @@ export class temporaryDB {
       somethingExists('track');
     }
   }
-  addAlbum(newAlbum: IAlbum) {
-    if (!this.checkAlbumById(newAlbum.id)) {
-      this.albums.push(newAlbum);
-      returnData(newAlbum, 'create');
-    } else {
-      // track with this id exists in our db
-      somethingExists('album');
-    }
-  }
   addRemoveFavs(
     id: UUID,
     type: 'track' | 'artist' | 'album',
@@ -196,7 +187,6 @@ export class temporaryDB {
   returnUserDataWithousPass(data: any, operation: 'create' | 'update') {
     const copy = JSON.parse(JSON.stringify(data));
     delete copy.password;
-    // !!! Check in chat the format of the new user, login or full data withour pass. No pass is in video req.
     return returnData(copy, operation);
   }
 
@@ -242,18 +232,6 @@ export class temporaryDB {
       notFound();
     }
   }
-  updateAlbum(id: UUID, data: IAlbum) {
-    const album = this.albums.find((album) => album.id === id);
-    if (album) {
-      album.id = data.id ? data.id : id;
-      album.name = data.name;
-      album.year = data.year;
-      album.artistId = data.artistId;
-      returnData(album, 'update');
-    } else {
-      notFound();
-    }
-  }
 
   // remove smth from db is below 5/5
   removeUserFromDb(id: UUID) {
@@ -275,16 +253,7 @@ export class temporaryDB {
       notFound();
     }
   }
-  removeAlbumFromDb(id: UUID) {
-    const album = this.getAlbumById(id);
-    if (album) {
-      this.albums = this.albums.filter((album) => album.id !== id);
-      this.clearAfterDeletion(id, 'album');
-      successDeletion();
-    } else {
-      notFound();
-    }
-  }
+
   removeArtistFromDb(id: UUID) {
     const artist = this.getArtistById(id);
     if (artist) {
