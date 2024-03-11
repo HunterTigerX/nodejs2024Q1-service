@@ -1,20 +1,15 @@
 import { UUID } from 'crypto';
 
-export interface INewUser {
-  login: string;
-  password: string;
-}
-
-export interface IUser extends INewUser {
-  id: UUID;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
-}
-
 export interface ICreateUserDto {
   login: string;
   password: string;
+}
+
+export interface IUser extends ICreateUserDto {
+  id: UUID;
+  version: number; // integer number, increments on update
+  createdat: number; // timestamp of creation
+  updatedat: number; // timestamp of last update
 }
 
 export interface IUpdatePasswordDto {

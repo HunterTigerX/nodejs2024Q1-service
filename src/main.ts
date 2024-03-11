@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { temporaryDB } from './database/database';
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 // import swaggerJSDoc from 'swagger-jsdoc';
@@ -32,5 +31,5 @@ async function bootstrap() {
 
   await app.listen(5000);
 }
-export const db = new temporaryDB();
+
 bootstrap();

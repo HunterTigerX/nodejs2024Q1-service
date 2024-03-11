@@ -1,8 +1,10 @@
 CREATE TABLE users (
   id UUID PRIMARY KEY,
+  login VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
   version INT NOT NULL,
-  createdAt TIMESTAMP NOT NULL,
-  updatedAt TIMESTAMP NOT NULL
+  createdat bigint NOT NULL,
+  updatedat bigint NOT NULL
 );
 
 CREATE TABLE artists (
