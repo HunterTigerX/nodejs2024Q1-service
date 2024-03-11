@@ -13,34 +13,35 @@ export class FavController {
   @Post('favs/track/:id')
   addFavTrack(@Param('id') id: string | UUID) {
     checkUUID(id);
-    return this.favService.addFav(id as UUID, 'track');
+    return this.favService.addFavTrack(id as UUID);
   }
 
   @Post('favs/artist/:id')
   addFavArtist(@Param('id') id: string | UUID) {
     checkUUID(id);
-    return this.favService.addFav(id as UUID, 'artist');
-  }
-
-  @Delete('favs/track/:id')
-  deleteTrackFromFav(@Param('id') id: UUID) {
-    checkUUID(id);
-    return this.favService.deleteFromFav(id, 'track');
-  }
-  @Delete('favs/artist/:id')
-  deleteArtistFromFav(@Param('id') id: UUID) {
-    checkUUID(id);
-    return this.favService.deleteFromFav(id, 'artist');
+    return this.favService.addFavArtist(id as UUID);
   }
 
   @Post('favs/album/:id')
   addFavAlbum(@Param('id') id: string | UUID) {
     checkUUID(id);
-    return this.favService.addFav(id as UUID, 'album');
+    return this.favService.addFavAlbum(id as UUID);
   }
+
+  @Delete('favs/track/:id')
+  deleteTrackFromFav(@Param('id') id: UUID) {
+    checkUUID(id);
+    return this.favService.deleteTrackFromFav(id);
+  }
+  @Delete('favs/artist/:id')
+  deleteArtistFromFav(@Param('id') id: UUID) {
+    checkUUID(id);
+    return this.favService.deleteArtistFromFav(id);
+  }
+
   @Delete('favs/album/:id')
   deleteAlbumFromFav(@Param('id') id: UUID) {
     checkUUID(id);
-    return this.favService.deleteFromFav(id, 'album');
+    return this.favService.deleteAlbumFromFav(id);
   }
 }

@@ -15,7 +15,7 @@ import {
 const createAlbumDto = {
   name: 'TEST_ALBUM',
   year: 2022,
-  artistId: null,
+  artistid: null,
 };
 
 const createArtistDto = {
@@ -26,8 +26,8 @@ const createArtistDto = {
 const createTrackDto = {
   name: 'Test track',
   duration: 335,
-  artistId: null,
-  albumId: null,
+  artistid: null,
+  albumid: null,
 };
 
 // Probability of collisions for UUID is almost zero
@@ -83,43 +83,43 @@ describe('Favorites (e2e)', () => {
 
       expect(createArtistResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: artistId },
+        body: { id: artistid },
       } = createArtistResponse;
 
       const createAlbumResponse = await unauthorizedRequest
         .post(albumsRoutes.create)
         .set(commonHeaders)
-        .send({ ...createAlbumDto, artistId });
+        .send({ ...createAlbumDto, artistid });
 
       expect(createAlbumResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: albumId },
+        body: { id: albumid },
       } = createAlbumResponse;
 
       const createTrackResponse = await unauthorizedRequest
         .post(tracksRoutes.create)
         .set(commonHeaders)
-        .send({ ...createTrackDto, artistId, albumId });
+        .send({ ...createTrackDto, artistid, albumid });
 
       expect(createTrackResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: trackId },
+        body: { id: trackid },
       } = createTrackResponse;
 
       const addTrackToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.tracks(trackId))
+        .post(favoritesRoutes.tracks(trackid))
         .set(commonHeaders);
 
       expect(addTrackToFavoritesResponse.status).toBe(StatusCodes.CREATED);
 
       const addAlbumToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.albums(albumId))
+        .post(favoritesRoutes.albums(albumid))
         .set(commonHeaders);
 
       expect(addAlbumToFavoritesResponse.status).toBe(StatusCodes.CREATED);
 
       const addArtistToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.artists(artistId))
+        .post(favoritesRoutes.artists(artistid))
         .set(commonHeaders);
 
       expect(addArtistToFavoritesResponse.status).toBe(StatusCodes.CREATED);
@@ -132,40 +132,40 @@ describe('Favorites (e2e)', () => {
       expect(response.body).toBeInstanceOf(Object);
 
       expect(response.body.artists).toContainEqual({
-        id: artistId,
+        id: artistid,
         name: createArtistDto.name,
         grammy: createArtistDto.grammy,
       });
 
       expect(response.body.albums).toContainEqual({
-        id: albumId,
+        id: albumid,
         name: createAlbumDto.name,
         year: createAlbumDto.year,
-        artistId,
+        artistid,
       });
 
       expect(response.body.tracks).toContainEqual({
-        id: trackId,
+        id: trackid,
         name: createTrackDto.name,
         duration: createTrackDto.duration,
-        artistId,
-        albumId,
+        artistid,
+        albumid,
       });
 
       const deleteArtistResponse = await unauthorizedRequest
-        .delete(artistsRoutes.delete(artistId))
+        .delete(artistsRoutes.delete(artistid))
         .set(commonHeaders);
 
       expect(deleteArtistResponse.status).toBe(StatusCodes.NO_CONTENT);
 
       const deleteAlbumResponse = await unauthorizedRequest
-        .delete(albumsRoutes.delete(albumId))
+        .delete(albumsRoutes.delete(albumid))
         .set(commonHeaders);
 
       expect(deleteAlbumResponse.status).toBe(StatusCodes.NO_CONTENT);
 
       const deleteTrackResponse = await unauthorizedRequest
-        .delete(tracksRoutes.delete(trackId))
+        .delete(tracksRoutes.delete(trackid))
         .set(commonHeaders);
 
       expect(deleteTrackResponse.status).toBe(StatusCodes.NO_CONTENT);
@@ -177,13 +177,13 @@ describe('Favorites (e2e)', () => {
       expect(responseAfterDeletion.status).toBe(StatusCodes.OK);
 
       const artistSearchRes = responseAfterDeletion.body.artists.find(
-        (artist) => artist.id === artistId,
+        (artist) => artist.id === artistid,
       );
       const albumSearchRes = responseAfterDeletion.body.albums.find(
-        (album) => album.id === albumId,
+        (album) => album.id === albumid,
       );
       const trackSearchRes = responseAfterDeletion.body.tracks.find(
-        (track) => track.id === trackId,
+        (track) => track.id === trackid,
       );
 
       expect(artistSearchRes).toBeUndefined();
@@ -201,11 +201,11 @@ describe('Favorites (e2e)', () => {
 
       expect(createArtistResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: artistId },
+        body: { id: artistid },
       } = createArtistResponse;
 
       const addArtistToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.artists(artistId))
+        .post(favoritesRoutes.artists(artistid))
         .set(commonHeaders);
 
       expect(addArtistToFavoritesResponse.status).toBe(StatusCodes.CREATED);
@@ -216,7 +216,7 @@ describe('Favorites (e2e)', () => {
 
       expect(response.status).toBe(StatusCodes.OK);
       expect(response.body.artists).toContainEqual({
-        id: artistId,
+        id: artistid,
         name: createArtistDto.name,
         grammy: createArtistDto.grammy,
       });
@@ -230,11 +230,11 @@ describe('Favorites (e2e)', () => {
 
       expect(createAlbumResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: albumId },
+        body: { id: albumid },
       } = createAlbumResponse;
 
       const addAlbumToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.albums(albumId))
+        .post(favoritesRoutes.albums(albumid))
         .set(commonHeaders);
 
       expect(addAlbumToFavoritesResponse.status).toBe(StatusCodes.CREATED);
@@ -245,10 +245,10 @@ describe('Favorites (e2e)', () => {
 
       expect(response.status).toBe(StatusCodes.OK);
       expect(response.body.albums).toContainEqual({
-        id: albumId,
+        id: albumid,
         name: createAlbumDto.name,
         year: createAlbumDto.year,
-        artistId: createAlbumDto.artistId,
+        artistid: createAlbumDto.artistid,
       });
     });
 
@@ -261,11 +261,11 @@ describe('Favorites (e2e)', () => {
       expect(createTrackResponse.status).toBe(StatusCodes.CREATED);
 
       const {
-        body: { id: trackId },
+        body: { id: trackid },
       } = createTrackResponse;
 
       const addTrackToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.tracks(trackId))
+        .post(favoritesRoutes.tracks(trackid))
         .set(commonHeaders);
 
       expect(addTrackToFavoritesResponse.status).toBe(StatusCodes.CREATED);
@@ -276,11 +276,11 @@ describe('Favorites (e2e)', () => {
 
       expect(response.status).toBe(StatusCodes.OK);
       expect(response.body.tracks).toContainEqual({
-        id: trackId,
+        id: trackid,
         name: createTrackDto.name,
         duration: createTrackDto.duration,
-        artistId: createTrackDto.artistId,
-        albumId: createTrackDto.albumId,
+        artistid: createTrackDto.artistid,
+        albumid: createTrackDto.albumid,
       });
     });
 
@@ -334,17 +334,17 @@ describe('Favorites (e2e)', () => {
 
       expect(createAlbumResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: albumId },
+        body: { id: albumid },
       } = createAlbumResponse;
 
       const addAlbumToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.albums(albumId))
+        .post(favoritesRoutes.albums(albumid))
         .set(commonHeaders);
 
       expect(addAlbumToFavoritesResponse.status).toBe(StatusCodes.CREATED);
 
       const deleteAlbumFromFavoritesResponse = await unauthorizedRequest
-        .delete(favoritesRoutes.albums(albumId))
+        .delete(favoritesRoutes.albums(albumid))
         .set(commonHeaders);
 
       expect(deleteAlbumFromFavoritesResponse.status).toBe(
@@ -358,13 +358,13 @@ describe('Favorites (e2e)', () => {
       expect(response.status).toBe(StatusCodes.OK);
 
       const albumSearchResult = response.body.albums.find(
-        (album) => album.id === albumId,
+        (album) => album.id === albumid,
       );
 
       expect(albumSearchResult).toBeUndefined();
 
       const cleanupResponse = await unauthorizedRequest
-        .delete(albumsRoutes.delete(albumId))
+        .delete(albumsRoutes.delete(albumid))
         .set(commonHeaders);
 
       expect(cleanupResponse.status).toBe(StatusCodes.NO_CONTENT);
@@ -378,17 +378,17 @@ describe('Favorites (e2e)', () => {
 
       expect(createArtistResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: artistId },
+        body: { id: artistid },
       } = createArtistResponse;
 
       const addArtistToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.artists(artistId))
+        .post(favoritesRoutes.artists(artistid))
         .set(commonHeaders);
 
       expect(addArtistToFavoritesResponse.status).toBe(StatusCodes.CREATED);
 
       const deleteArtistFromFavoritesResponse = await unauthorizedRequest
-        .delete(favoritesRoutes.artists(artistId))
+        .delete(favoritesRoutes.artists(artistid))
         .set(commonHeaders);
 
       expect(deleteArtistFromFavoritesResponse.status).toBe(
@@ -402,13 +402,13 @@ describe('Favorites (e2e)', () => {
       expect(response.status).toBe(StatusCodes.OK);
 
       const artistSearchResult = response.body.artists.find(
-        (artist) => artist.id === artistId,
+        (artist) => artist.id === artistid,
       );
 
       expect(artistSearchResult).toBeUndefined();
 
       const cleanupResponse = await unauthorizedRequest
-        .delete(artistsRoutes.delete(artistId))
+        .delete(artistsRoutes.delete(artistid))
         .set(commonHeaders);
 
       expect(cleanupResponse.status).toBe(StatusCodes.NO_CONTENT);
@@ -422,17 +422,17 @@ describe('Favorites (e2e)', () => {
 
       expect(createTrackResponse.status).toBe(StatusCodes.CREATED);
       const {
-        body: { id: trackId },
+        body: { id: trackid },
       } = createTrackResponse;
 
       const addTrackToFavoritesResponse = await unauthorizedRequest
-        .post(favoritesRoutes.tracks(trackId))
+        .post(favoritesRoutes.tracks(trackid))
         .set(commonHeaders);
 
       expect(addTrackToFavoritesResponse.status).toBe(StatusCodes.CREATED);
 
       const deleteTrackFromFavoritesResponse = await unauthorizedRequest
-        .delete(favoritesRoutes.tracks(trackId))
+        .delete(favoritesRoutes.tracks(trackid))
         .set(commonHeaders);
 
       expect(deleteTrackFromFavoritesResponse.status).toBe(
@@ -446,13 +446,13 @@ describe('Favorites (e2e)', () => {
       expect(response.status).toBe(StatusCodes.OK);
 
       const trackSearchResult = response.body.tracks.find(
-        (track) => track.id === trackId,
+        (track) => track.id === trackid,
       );
 
       expect(trackSearchResult).toBeUndefined();
 
       const cleanupResponse = await unauthorizedRequest
-        .delete(tracksRoutes.delete(trackId))
+        .delete(tracksRoutes.delete(trackid))
         .set(commonHeaders);
 
       expect(cleanupResponse.status).toBe(StatusCodes.NO_CONTENT);

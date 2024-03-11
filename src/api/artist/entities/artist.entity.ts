@@ -1,8 +1,8 @@
 import { UUID } from 'crypto';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity({ name: 'albums' })
-export class Albums {
+@Entity({ name: 'artists' })
+export class Artists {
   @PrimaryGeneratedColumn('uuid')
   id: UUID;
 
@@ -10,16 +10,12 @@ export class Albums {
   name: string;
 
   @Column()
-  year: number;
-
-  @Column({ type: 'text', nullable: true })
-  artistid: string | null;
+  grammy: boolean;
 }
 
 /*
-Album DTO {
+Artist DTO {
   name: string;
-  year: number;
-  artistid: string | null; // refers to Artist
+  grammy: boolean;
 }
 */

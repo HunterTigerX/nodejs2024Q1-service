@@ -5,8 +5,8 @@ import { tracksRoutes } from '../endpoints';
 const createTrackDto = {
   name: 'TEST_TRACK',
   duration: 199,
-  artistId: null,
-  albumId: null,
+  artistid: null,
+  albumid: null,
 };
 
 // Probability of collisions for UUID is almost zero
@@ -51,8 +51,8 @@ describe('Tracks (e2e)', () => {
         .send({
           name: createTrackDto.name,
           duration: 188,
-          artistId: createTrackDto.artistId,
-          albumId: createTrackDto.albumId,
+          artistid: createTrackDto.artistid,
+          albumid: createTrackDto.albumid,
         })
         .expect(StatusCodes.UNAUTHORIZED);
     });

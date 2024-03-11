@@ -11,8 +11,8 @@ import { tracksRoutes } from './endpoints';
 const createTrackDto = {
   name: 'TEST_TRACK',
   duration: 199,
-  artistId: null,
-  albumId: null,
+  artistid: null,
+  albumid: null,
 };
 
 // Probability of collisions for UUID is almost zero
@@ -102,12 +102,12 @@ describe('Tracks (e2e)', () => {
 
       expect(response.status).toBe(StatusCodes.CREATED);
 
-      const { id, name, duration, artistId, albumId } = response.body;
+      const { id, name, duration, artistid, albumid } = response.body;
       expect(validate(id)).toBe(true);
       expect(name).toBe(createTrackDto.name);
       expect(duration).toBe(createTrackDto.duration);
-      expect(artistId).toBe(createTrackDto.artistId);
-      expect(albumId).toBe(createTrackDto.albumId);
+      expect(artistid).toBe(createTrackDto.artistid);
+      expect(albumid).toBe(createTrackDto.albumid);
 
       const cleanupResponse = await unauthorizedRequest
         .delete(tracksRoutes.delete(id))
@@ -159,8 +159,8 @@ describe('Tracks (e2e)', () => {
         .send({
           name: createTrackDto.name,
           duration: 188,
-          artistId: createTrackDto.artistId,
-          albumId: createTrackDto.albumId,
+          artistid: createTrackDto.artistid,
+          albumid: createTrackDto.albumid,
         });
 
       expect(updateResponse.statusCode).toBe(StatusCodes.OK);
@@ -169,13 +169,13 @@ describe('Tracks (e2e)', () => {
         id: updatedId,
         name,
         duration,
-        artistId,
-        albumId,
+        artistid,
+        albumid,
       } = updateResponse.body;
 
       expect(name).toBe(createTrackDto.name);
-      expect(artistId).toBe(createTrackDto.artistId);
-      expect(albumId).toBe(createTrackDto.albumId);
+      expect(artistid).toBe(createTrackDto.artistid);
+      expect(albumid).toBe(createTrackDto.albumid);
       expect(typeof duration).toBe('number');
       expect(validate(updatedId)).toBe(true);
       expect(createdId).toBe(updatedId);
@@ -194,8 +194,8 @@ describe('Tracks (e2e)', () => {
         .send({
           name: createTrackDto.name,
           duration: 188,
-          artistId: createTrackDto.artistId,
-          albumId: createTrackDto.albumId,
+          artistid: createTrackDto.artistid,
+          albumid: createTrackDto.albumid,
         });
 
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
@@ -217,8 +217,8 @@ describe('Tracks (e2e)', () => {
         .send({
           name: null,
           duration: '188',
-          artistId: 123,
-          albumId: 123,
+          artistid: 123,
+          albumid: 123,
         });
 
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
@@ -231,8 +231,8 @@ describe('Tracks (e2e)', () => {
         .send({
           name: createTrackDto.name,
           duration: 188,
-          artistId: createTrackDto.artistId,
-          albumId: createTrackDto.albumId,
+          artistid: createTrackDto.artistid,
+          albumid: createTrackDto.albumid,
         });
 
       expect(response.status).toBe(StatusCodes.NOT_FOUND);

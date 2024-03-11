@@ -8,33 +8,33 @@ export const usersRoutes = {
 
 export const artistsRoutes = {
   getAll: '/artist',
-  getById: (artistId) => `/artist/${artistId}`,
+  getById: (artistid) => `/artist/${artistid}`,
   create: '/artist',
-  update: (artistId) => `/artist/${artistId}`,
-  delete: (artistId) => `/artist/${artistId}`,
+  update: (artistid) => `/artist/${artistid}`,
+  delete: (artistid) => `/artist/${artistid}`,
 };
 
 export const albumsRoutes = {
   getAll: '/album',
-  getById: (albumId) => `/album/${albumId}`,
+  getById: (albumid) => `/album/${albumid}`,
   create: '/album',
-  update: (albumId) => `/album/${albumId}`,
-  delete: (albumId) => `/album/${albumId}`,
+  update: (albumid) => `/album/${albumid}`,
+  delete: (albumid) => `/album/${albumid}`,
 };
 
 export const tracksRoutes = {
   getAll: '/track',
-  getById: (trackId) => `/track/${trackId}`,
+  getById: (trackid) => `/track/${trackid}`,
   create: '/track',
-  update: (trackId) => `/track/${trackId}`,
-  delete: (trackId) => `/track/${trackId}`,
+  update: (trackid) => `/track/${trackid}`,
+  delete: (trackid) => `/track/${trackid}`,
 };
 
 export const favoritesRoutes = {
   getAll: '/favs',
-  artists: (artistId) => `/favs/artist/${artistId}`,
-  albums: (albumId) => `/favs/album/${albumId}`,
-  tracks: (trackId) => `/favs/track/${trackId}`,
+  artists: (artistid) => `/favs/artist/${artistid}`,
+  albums: (albumid) => `/favs/album/${albumid}`,
+  tracks: (trackid) => `/favs/track/${trackid}`,
 };
 
 export const authRoutes = {

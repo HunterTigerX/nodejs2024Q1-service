@@ -1,25 +1,31 @@
 import { UUID } from 'crypto';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity({ name: 'albums' })
-export class Albums {
+@Entity({ name: 'tracks' })
+export class Tracks {
   @PrimaryGeneratedColumn('uuid')
   id: UUID;
 
   @Column()
   name: string;
 
-  @Column()
-  year: number;
-
   @Column({ type: 'text', nullable: true })
   artistid: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  albumid: string | null;
+
+  @Column()
+  duration: number;
 }
 
 /*
-Album DTO {
+Track DTO {
+  id: UUID;
+  year: any;
   name: string;
-  year: number;
   artistid: string | null; // refers to Artist
+  albumid: string | null; // refers to Album
+  duration: number; // integer number
 }
 */

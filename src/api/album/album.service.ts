@@ -10,21 +10,37 @@ import {
 import { Albums } from './entities/album.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Artists } from '../artist/entities/artist.entity';
+import {
+  FavAlbums,
+  FavArtists,
+  FavTracks,
+} from '../favorites/entities/favorites.entity';
+import { Tracks } from '../track/entities/track.entity';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @InjectRepository(Albums)
-    private readonly albumRepository: Repository<Albums>,
+    private readonly albumsRepository: Repository<Albums>,
+    @InjectRepository(FavAlbums)
+    private readonly favAlbumsRepository: Repository<FavAlbums>,
+    @InjectRepository(Artists)
+    private readonly artistsRepository: Repository<Artists>,
+    @InjectRepository(FavArtists)
+    private readonly favArtistsRepository: Repository<FavArtists>,
+    @InjectRepository(Tracks)
+    private readonly tracksRepository: Repository<Tracks>,
+    @InjectRepository(FavTracks)
+    private readonly favTracksRepository: Repository<FavTracks>,
   ) {}
 
   async getAllAlbums() {
-    // const albums2= db.getAllAlbums();
-    const albums = await this.albumRepository.find();
+    const albums = await this.albumsRepository.find();
     return albums;
   }
   async getAlbumById(id: UUID) {
-    const album = await this.albumRepository.findOne({
+    const album = await this.albumsRepository.findOne({
       where: { id },
     });
     if (album) {
@@ -39,22 +55,22 @@ export class AlbumService {
       id: newUUID,
       name: data.name,
       year: data.year,
-      artistId: data.artistId,
+      artistid: data.artistid,
     };
-    const albums = this.albumRepository.create(newAlbum);
-    await this.albumRepository.save(albums);
+    const albums = this.albumsRepository.create(newAlbum);
+    await this.albumsRepository.save(albums);
     returnData(newAlbum, 'create');
   }
   async updateAlbum(id: UUID, data: IAlbum) {
     isAlbumDataValid(data);
-    const albumToChange = await this.albumRepository.findOne({
+    const albumToChange = await this.albumsRepository.findOne({
       where: { id },
     });
     if (albumToChange) {
       albumToChange.name = data.name;
       albumToChange.year = data.year;
-      albumToChange.artistId = data.artistId;
-      await this.albumRepository.save(albumToChange);
+      albumToChange.artistid = data.artistid;
+      await this.albumsRepository.save(albumToChange);
       returnData(albumToChange, 'update');
     } else {
       notFound();
@@ -62,18 +78,31 @@ export class AlbumService {
   }
 
   async deleteAlbum(id: UUID) {
-    const albumToDelete = await this.albumRepository.findOne({
+    const albumToDelete = await this.albumsRepository.findOne({
       where: { id },
     });
     if (albumToDelete) {
-      // const trackToChange = await trackRepository.findOne({
-      //   where: { id },
-      // });
-      // await trackRepository.save(trackToChange);
-      // this.favorites.albums = this.favorites.albums.filter((album) => {
-      //   album.id !== id;
-      // });
-      await this.albumRepository.remove(albumToDelete);
+      await this.albumsRepository.remove(albumToDelete);
+      const favAlbumToDelete = await this.favAlbumsRepository.findOne({
+        where: { id },
+      });
+      if (favAlbumToDelete) {
+        await this.favAlbumsRepository.remove(favAlbumToDelete);
+      }
+      const trackToChange = await this.tracksRepository.findOne({
+        where: { albumid: id },
+      });
+      if (trackToChange) {
+        trackToChange.albumid = null;
+        await this.tracksRepository.save(trackToChange);
+      }
+      const favTrackToChange = await this.favTracksRepository.findOne({
+        where: { albumid: id },
+      });
+      if (favTrackToChange) {
+        favTrackToChange.albumid = null;
+        await this.favTracksRepository.save(favTrackToChange);
+      }
       successDeletion();
     } else {
       notFound();

@@ -258,18 +258,18 @@ describe('artist (e2e)', () => {
       expect(response.status).toBe(StatusCodes.NOT_FOUND);
     });
 
-    it('should set track.artistId to null after deletion', async () => {
+    it('should set track.artistid to null after deletion', async () => {
       const creationArtistResponse = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)
         .send(createArtistDto);
 
-      const { id: artistId } = creationArtistResponse.body;
+      const { id: artistid } = creationArtistResponse.body;
 
       const createTrackDto = {
         name: 'TEST_track',
-        albumId: null,
-        artistId,
+        albumid: null,
+        artistid,
         duration: 200,
       };
 
@@ -280,39 +280,39 @@ describe('artist (e2e)', () => {
         .set(commonHeaders)
         .send(createTrackDto);
 
-      const { id: trackId } = creationTrackResponse.body;
+      const { id: trackid } = creationTrackResponse.body;
 
       expect(creationTrackResponse.statusCode).toBe(StatusCodes.CREATED);
 
       const artistDeletionResponse = await unauthorizedRequest
-        .delete(artistsRoutes.delete(artistId))
+        .delete(artistsRoutes.delete(artistid))
         .set(commonHeaders);
 
       expect(artistDeletionResponse.statusCode).toBe(StatusCodes.NO_CONTENT);
 
       const searchTrackResponse = await unauthorizedRequest
-        .get(tracksRoutes.getById(trackId))
+        .get(tracksRoutes.getById(trackid))
         .set(commonHeaders);
 
       expect(searchTrackResponse.statusCode).toBe(StatusCodes.OK);
 
-      const { artistId: trackArtistId } = searchTrackResponse.body;
+      const { artistid: trackArtistId } = searchTrackResponse.body;
 
       expect(trackArtistId).toBeNull();
     });
 
-    it('should set album.artistId to null after deletion', async () => {
+    it('should set album.artistid to null after deletion', async () => {
       const creationArtistResponse = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)
         .send(createArtistDto);
 
-      const { id: artistId } = creationArtistResponse.body;
+      const { id: artistid } = creationArtistResponse.body;
 
       const createAlbumDto = {
         name: 'TEST_album',
         year: 2023,
-        artistId,
+        artistid,
       };
 
       expect(creationArtistResponse.status).toBe(StatusCodes.CREATED);
@@ -322,23 +322,23 @@ describe('artist (e2e)', () => {
         .set(commonHeaders)
         .send(createAlbumDto);
 
-      const { id: albumId } = creationAlbumResponse.body;
+      const { id: albumid } = creationAlbumResponse.body;
 
       expect(creationAlbumResponse.statusCode).toBe(StatusCodes.CREATED);
 
       const artistDeletionResponse = await unauthorizedRequest
-        .delete(artistsRoutes.delete(artistId))
+        .delete(artistsRoutes.delete(artistid))
         .set(commonHeaders);
 
       expect(artistDeletionResponse.statusCode).toBe(StatusCodes.NO_CONTENT);
 
       const searchAlbumResponse = await unauthorizedRequest
-        .get(albumsRoutes.getById(albumId))
+        .get(albumsRoutes.getById(albumid))
         .set(commonHeaders);
 
       expect(searchAlbumResponse.statusCode).toBe(StatusCodes.OK);
 
-      const { artistId: albumArtistId } = searchAlbumResponse.body;
+      const { artistid: albumArtistId } = searchAlbumResponse.body;
 
       expect(albumArtistId).toBeNull();
     });

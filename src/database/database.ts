@@ -33,154 +33,21 @@ export class temporaryDB {
   getAllUsers() {
     return this.users;
   }
-  getAllTracks() {
-    return this.tracks;
-  }
-  getAllAlbums() {
-    return this.albums;
-  }
-  getAllArtists() {
-    return this.artists;
-  }
-  getAllFavorites() {
-    return this.favorites;
-  }
-
   // get something from db by id or else is below 5/5
   getUserById(id: UUID): IUser | undefined {
     const user = this.users.find((user) => user.id === id);
     return user;
   }
-  getTrackById(id: UUID): ITrack | undefined {
-    const user = this.tracks.find((track) => track.id === id);
-    return user;
-  }
-  getArtistById(id: UUID): IArtist | undefined {
-    const artist = this.artists.find((artist) => artist.id === id);
-    return artist;
-  }
 
-  getAlbumById(id: UUID): IAlbum | undefined {
-    const album = this.albums.find((album) => album.id === id);
-    return album;
-  }
-
-  // check if something is in the db is below 4/4
   checkUserByLogin(login: string) {
     const user = this.users.find((user) => user.login === login);
     return user;
-  }
-  checkTrackById(id: UUID) {
-    const track = this.tracks.find((track) => track.id === id);
-    return track;
-  }
-  checkAlbumById(id: UUID) {
-    const album = this.albums.find((album) => album.id === id);
-    return album;
-  }
-  checkArtistById(id: UUID) {
-    const artist = this.artists.find((artist) => artist.id === id);
-    return artist;
   }
 
   // add everything do db is below 5/5
   addUser(newUser: IUser) {
     this.users.push(newUser);
     this.returnUserDataWithousPass(newUser, 'create');
-  }
-  addTrack(data: ITrack) {
-    if (!this.checkTrackById(data.id)) {
-      this.tracks.push(data);
-      returnData(data, 'create');
-    } else {
-      // track with this id exists in our db
-      somethingExists('track');
-    }
-  }
-  addArtist(newArtist: IArtist) {
-    if (!this.checkTrackById(newArtist.id)) {
-      this.artists.push(newArtist);
-      returnData(newArtist, 'create');
-    } else {
-      // track with this id exists in our db
-      somethingExists('track');
-    }
-  }
-  addRemoveFavs(
-    id: UUID,
-    type: 'track' | 'artist' | 'album',
-    operation: 'add' | 'remove',
-  ) {
-    if (type === 'track') {
-      const doTrackExistInDb = this.checkTrackById(id);
-      if (!doTrackExistInDb) {
-        noIdInDbWhenFav(type);
-      }
-      const doTrackExistInFavs =
-        this.favorites.tracks.length !== 0
-          ? this.favorites.tracks.find((track) => track.id === id)
-          : undefined;
-      if (operation === 'add' && doTrackExistInFavs) {
-        alreadyFav('track');
-      } else {
-        if (operation === 'remove') {
-          this.favorites.tracks = this.favorites.tracks.filter(
-            (track) => track.id !== id,
-          );
-          successDeletion();
-        } else if (operation === 'add') {
-          this.favorites.tracks.push(doTrackExistInDb);
-          return addedToFav(this.favorites.tracks);
-        }
-      }
-    }
-    if (type === 'artist') {
-      const doArtistExistInDb = this.checkArtistById(id);
-      if (!doArtistExistInDb) {
-        noIdInDbWhenFav(type);
-      }
-      const doArtistExistInFavs =
-        this.favorites.artists.length !== 0
-          ? this.favorites.artists.find((artist) => artist.id === id)
-          : undefined;
-
-      if (operation === 'add' && doArtistExistInFavs) {
-        alreadyFav('artist');
-      } else {
-        if (operation === 'remove') {
-          this.favorites.artists = this.favorites.artists.filter(
-            (artist) => artist.id !== id,
-          );
-          successDeletion();
-        } else if (operation === 'add') {
-          this.favorites.artists.push(doArtistExistInDb);
-          return addedToFav(this.favorites.artists);
-        }
-      }
-    }
-    if (type === 'album') {
-      const doAlbumExistInDb = this.checkAlbumById(id);
-      if (!doAlbumExistInDb) {
-        noIdInDbWhenFav(type);
-      }
-      const doAlbumExistInFavs =
-        this.favorites.albums.length === 0
-          ? this.favorites.albums.find((album) => album.id === id)
-          : undefined;
-      if (operation === 'add' && doAlbumExistInFavs) {
-        alreadyFav('album');
-      } else {
-        if (operation === 'remove') {
-          this.favorites.albums = this.favorites.albums.filter(
-            (album) => album.id !== id,
-          );
-          successDeletion();
-        } else if (operation === 'add') {
-          this.favorites.albums.push(doAlbumExistInDb);
-          return addedToFav(this.favorites.albums);
-        }
-      }
-    }
   }
 
   // return data to user if needed is below
@@ -208,30 +75,6 @@ export class temporaryDB {
       notFound();
     }
   }
-  updateTrack(id: UUID, data: ITrack) {
-    const track = this.tracks.find((track) => track.id === id);
-    if (track) {
-      track.id = data.id ? data.id : id;
-      track.albumId = data.albumId;
-      track.artistId = data.artistId;
-      track.duration = data.duration;
-      track.name = data.name;
-      returnData(track, 'update');
-    } else {
-      notFound();
-    }
-  }
-  updateArtist(id: UUID, data: IArtist) {
-    const artist = this.artists.find((artist) => artist.id === id);
-    if (artist) {
-      artist.id = data.id ? data.id : id;
-      artist.name = data.name;
-      artist.grammy = data.grammy;
-      returnData(artist, 'update');
-    } else {
-      notFound();
-    }
-  }
 
   // remove smth from db is below 5/5
   removeUserFromDb(id: UUID) {
@@ -243,47 +86,27 @@ export class temporaryDB {
       notFound();
     }
   }
-  removeTrackFromDb(id: UUID) {
-    const track = this.getTrackById(id);
-    if (track) {
-      this.tracks = this.tracks.filter((track) => track.id !== id);
-      this.clearAfterDeletion(id, 'track');
-      successDeletion();
-    } else {
-      notFound();
-    }
-  }
 
-  removeArtistFromDb(id: UUID) {
-    const artist = this.getArtistById(id);
-    if (artist) {
-      this.artists = this.artists.filter((artist) => artist.id !== id);
-      this.clearAfterDeletion(id, 'artist');
-      successDeletion();
-    } else {
-      notFound();
-    }
-  }
   clearAfterDeletion(id: UUID, type: 'artist' | 'track' | 'album') {
     // When album was deleted we remove album from track data
     // When artist was deleted we remove artist from track and album
     // When track data was deleted we do nothing
     if (type === 'album') {
       this.tracks.forEach((track) => {
-        if (track.albumId === id) {
-          track.albumId = null;
+        if (track.albumid === id) {
+          track.albumid = null;
         }
       });
     }
     if (type === 'artist') {
       this.albums.forEach((album) => {
-        if (album.artistId === id) {
-          album.artistId = null;
+        if (album.artistid === id) {
+          album.artistid = null;
         }
       });
       this.tracks.forEach((track) => {
-        if (track.artistId === id) {
-          track.artistId = null;
+        if (track.artistid === id) {
+          track.artistid = null;
         }
       });
     }
@@ -299,11 +122,6 @@ export class temporaryDB {
       });
     }
     if (type !== 'track') {
-      this.tracks.forEach((track) => {
-        if (track.artistId === id) {
-          track.artistId = null;
-        }
-      });
       this.favorites.tracks = this.favorites.tracks.filter((track) => {
         track.id !== id;
       });
