@@ -40,8 +40,8 @@ export class TrackService {
     const newTrack = {
       id: newUUID,
       name: data.name,
-      artistid: data.artistid,
-      albumid: data.albumid,
+      artistId: data.artistId,
+      albumId: data.albumId,
       duration: data.duration,
     };
     const tracks = this.tracksRepository.create(newTrack);
@@ -55,8 +55,8 @@ export class TrackService {
     });
     if (trackToChange) {
       trackToChange.name = data.name;
-      trackToChange.artistid = data.artistid;
-      trackToChange.albumid = data.albumid;
+      trackToChange.artistId = data.artistId;
+      trackToChange.albumId = data.albumId;
       trackToChange.duration = data.duration;
       await this.tracksRepository.save(trackToChange);
       returnData(trackToChange, 'update');

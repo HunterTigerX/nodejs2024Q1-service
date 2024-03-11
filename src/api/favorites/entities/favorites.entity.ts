@@ -10,10 +10,10 @@ export class FavTracks {
   name: string;
 
   @Column({ type: 'text', nullable: true })
-  artistid: string | null;
+  artistId: string | null;
 
   @Column({ type: 'text', nullable: true })
-  albumid: string | null;
+  albumId: string | null;
 
   @Column()
   duration: number;
@@ -31,7 +31,7 @@ export class FavAlbums {
   year: number;
 
   @Column({ type: 'text', nullable: true })
-  artistid: string | null;
+  artistId: string | null;
 }
 
 @Entity({ name: 'favartists' })

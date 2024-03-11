@@ -8,8 +8,15 @@ export interface ICreateUserDto {
 export interface IUser extends ICreateUserDto {
   id: UUID;
   version: number; // integer number, increments on update
-  createdat: number; // timestamp of creation
-  updatedat: number; // timestamp of last update
+  createdAt: number; // timestamp of creation
+  updatedAt: number; // timestamp of last update
+}
+
+export interface IUserSmall extends ICreateUserDto {
+  id: UUID;
+  version: number; // integer number, increments on update
+  createdAt: number; // timestamp of creation
+  updatedAt: number; // timestamp of last update
 }
 
 export interface IUpdatePasswordDto {

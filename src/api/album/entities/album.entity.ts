@@ -13,13 +13,5 @@ export class Albums {
   year: number;
 
   @Column({ type: 'text', nullable: true })
-  artistid: string | null;
+  artistId: string | null;
 }
-
-/*
-Album DTO {
-  name: string;
-  year: number;
-  artistid: string | null; // refers to Artist
-}
-*/

@@ -91,34 +91,34 @@ export class ArtistService {
       }
 
       const albumToChange = await this.albumsRepository.findOne({
-        where: { artistid: id },
+        where: { artistId: id },
       });
       if (albumToChange) {
-        albumToChange.artistid = null;
+        albumToChange.artistId = null;
         await this.albumsRepository.save(albumToChange);
       }
       const trackToChange = await this.tracksRepository.findOne({
-        where: { artistid: id },
+        where: { artistId: id },
       });
 
       if (trackToChange) {
-        trackToChange.artistid = null;
+        trackToChange.artistId = null;
         await this.tracksRepository.save(trackToChange);
       }
 
       const favAlbumToChange = await this.favAlbumsRepository.findOne({
-        where: { artistid: id },
+        where: { artistId: id },
       });
       if (favAlbumToChange) {
-        favAlbumToChange.artistid = null;
+        favAlbumToChange.artistId = null;
         await this.favAlbumsRepository.save(favAlbumToChange);
       }
 
       const favTrackToChange = await this.favTracksRepository.findOne({
-        where: { artistid: id },
+        where: { artistId: id },
       });
       if (favTrackToChange) {
-        favTrackToChange.artistid = null;
+        favTrackToChange.artistId = null;
         await this.favTracksRepository.save(favTrackToChange);
       }
 

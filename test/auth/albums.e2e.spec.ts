@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 const createAlbumDto = {
   name: 'TEST_ALBUM',
   year: 2022,
-  artistid: null,
+  artistId: null,
 };
 
 // Probability of collisions for UUID is almost zero
@@ -48,7 +48,7 @@ describe('Album (e2e)', () => {
         .send({
           name: createAlbumDto.name,
           year: updatedYear,
-          artistid: randomUUID,
+          artistId: randomUUID,
         })
         .expect(StatusCodes.UNAUTHORIZED);
     });

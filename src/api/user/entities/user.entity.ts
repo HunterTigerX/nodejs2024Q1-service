@@ -16,8 +16,8 @@ export class Users {
   version: number;
 
   @Column('bigint')
-  createdat: number;
+  createdAt: number;
 
   @Column('bigint')
-  updatedat: number;
+  updatedAt: number;
 }

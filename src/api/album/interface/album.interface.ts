@@ -4,5 +4,5 @@ export interface IAlbum {
   id: UUID;
   name: string;
   year: number;
-  artistid: string | null; // refers to Artist
+  artistId: string | null; // refers to Artist
 }

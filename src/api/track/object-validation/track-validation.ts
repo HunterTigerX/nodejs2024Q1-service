@@ -5,10 +5,10 @@ export function isTrackDataValid(obj: ITrack) {
   const isValid =
     'name' in obj &&
     typeof obj.name === 'string' &&
-    'artistid' in obj &&
-    (typeof obj.artistid === 'string' || 'null') &&
-    'albumid' in obj &&
-    (typeof obj.albumid === 'string' || 'null') &&
+    'artistId' in obj &&
+    (typeof obj.artistId === 'string' || 'null') &&
+    'albumId' in obj &&
+    (typeof obj.albumId === 'string' || 'null') &&
     'duration' in obj &&
     typeof obj.duration === 'number';
   if (!isValid) {

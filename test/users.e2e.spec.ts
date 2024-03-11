@@ -97,7 +97,7 @@ describe('Users (e2e)', () => {
         .set(commonHeaders)
         .send(createUserDto);
 
-      const { id, version, login, createdat, updatedat } = response.body;
+      const { id, version, login, createdAt, updatedAt } = response.body;
 
       expect(response.status).toBe(StatusCodes.CREATED);
 
@@ -105,9 +105,9 @@ describe('Users (e2e)', () => {
       expect(response.body).not.toHaveProperty('password');
       expect(validate(id)).toBe(true);
       expect(version).toBe(1);
-      expect(typeof createdat).toBe('number');
-      expect(typeof updatedat).toBe('number');
-      expect(createdat === updatedat).toBe(true);
+      expect(typeof createdAt).toBe('number');
+      expect(typeof updatedAt).toBe('number');
+      expect(createdAt === updatedAt).toBe(true);
 
       const cleanupResponse = await unauthorizedRequest
         .delete(usersRoutes.delete(id))
@@ -169,8 +169,8 @@ describe('Users (e2e)', () => {
         id: updatedId,
         version,
         login,
-        createdat,
-        updatedat,
+        createdAt,
+        updatedAt,
       } = updateResponse.body;
 
       expect(login).toBe(createUserDto.login);
@@ -178,9 +178,9 @@ describe('Users (e2e)', () => {
       expect(validate(updatedId)).toBe(true);
       expect(createdId).toBe(updatedId);
       expect(version).toBe(2);
-      expect(typeof createdat).toBe('number');
-      expect(typeof updatedat).toBe('number');
-      expect(createdat === updatedat).toBe(false);
+      expect(typeof createdAt).toBe('number');
+      expect(typeof updatedAt).toBe('number');
+      expect(createdAt === updatedAt).toBe(false);
 
       const updateResponse2 = await unauthorizedRequest
         .put(usersRoutes.update(createdId))

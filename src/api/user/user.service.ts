@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UUID, randomUUID } from 'crypto';
 import {
   ICreateUserDto,
-  IUser,
+  IUserSmall,
   IUpdatePasswordDto,
 } from './interface/user.interface';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,13 +41,13 @@ export class UserService {
   async addUser(data: ICreateUserDto) {
     const newUUID = randomUUID();
     const timeStamp = Date.now();
-    const newUser: IUser = {
+    const newUser: IUserSmall = {
       login: data.login,
       password: data.password,
       version: 1,
       id: newUUID,
-      createdat: timeStamp,
-      updatedat: timeStamp,
+      createdAt: timeStamp,
+      updatedAt: timeStamp,
     };
     const user = this.usersRepository.create(newUser);
     await this.usersRepository.save(user);
@@ -67,8 +67,8 @@ export class UserService {
         const timeStamp = Date.now();
         userToChange.password = data.newPassword;
         userToChange.version += 1;
-        userToChange.createdat = +userToChange.createdat;
-        userToChange.updatedat = timeStamp;
+        userToChange.createdAt = +userToChange.createdAt;
+        userToChange.updatedAt = timeStamp;
         await this.usersRepository.save(userToChange);
         const copy = JSON.parse(JSON.stringify(userToChange));
         delete copy.password;

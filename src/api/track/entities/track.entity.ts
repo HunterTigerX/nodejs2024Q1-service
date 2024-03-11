@@ -10,10 +10,10 @@ export class Tracks {
   name: string;
 
   @Column({ type: 'text', nullable: true })
-  artistid: string | null;
+  artistId: string | null;
 
   @Column({ type: 'text', nullable: true })
-  albumid: string | null;
+  albumId: string | null;
 
   @Column()
   duration: number;
@@ -24,8 +24,8 @@ Track DTO {
   id: UUID;
   year: any;
   name: string;
-  artistid: string | null; // refers to Artist
-  albumid: string | null; // refers to Album
+  artistId: string | null; // refers to Artist
+  albumId: string | null; // refers to Album
   duration: number; // integer number
 }
 */
