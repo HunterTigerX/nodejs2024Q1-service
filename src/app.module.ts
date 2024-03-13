@@ -6,14 +6,12 @@ import { ArtistModule } from './api/artist/artist.module';
 import { FavModule } from './api/favorites/favorites.module';
 import { TrackModule } from './api/track/track.module';
 import { UserModule } from './api/user/user.module';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import databaseConfig from './database.config';
+import { dataSourceOptions } from './data.source';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ load: [databaseConfig] }),
-    TypeOrmModule.forRoot(databaseConfig()),
+    TypeOrmModule.forRoot(dataSourceOptions),
     AlbumModule,
     UserModule,
     ArtistModule,

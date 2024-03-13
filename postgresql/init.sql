@@ -17,7 +17,7 @@ CREATE TABLE albums (
   "id" UUID PRIMARY KEY,
   "name" VARCHAR(255) NOT NULL,
   "artistId" UUID,
-  year INT NOT NULL
+  "year" INT NOT NULL
 );
 
 CREATE TABLE tracks (
@@ -27,8 +27,6 @@ CREATE TABLE tracks (
   "albumId" UUID,
   "duration" INT NOT NULL
 );
-
-
 
 CREATE TABLE favartists (
   "id" UUID PRIMARY KEY,

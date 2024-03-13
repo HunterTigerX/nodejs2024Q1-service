@@ -1,15 +1,54 @@
 version: '3'
 services:
   postgresql:
-    build: ./postgresql
+    container_name: postgresql
+    build: 
+       context: ./postgresql
+       dockerfile: Dockerfile
     image: postgres-huntertigerx
     ports:
-      - "4000:4000"
+      - ${DB_PORT}:${DB_PORT}
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - db-logs:/var/log/postgresql
+    environment:
+      - DB_HOST: ${DB_HOST}
+      - DB_PORT: ${DB_PORT}
+      - DB_USERNAME: ${DB_USERNAME}
+      - DB_PASSWORD: ${DB_PASSWORD}
+      - DB_NAME: ${DB_NAME}
+    networks:
+      - hls
 
-  myapplication:
+  homelibrary:
+    container_name: homelibrary
+    image: huntertigerx/homelibrary-huntertigerx
+    restart: unless-stopped
     build: 
           context: .
           dockerfile: Dockerfile
-    image: homelibrary-huntertigerx
     ports:
-      - "5000:5000"
+      - ${PORT}:${PORT}
+    depends_on:
+      - db
+    volumes: 
+      - ./src:/app/src
+    environment:
+      - PORT: ${PORT}
+      - DB_HOST: ${DB_HOST}
+      - DB_PORT: ${DB_PORT}
+      - DB_USERNAME: ${DB_USERNAME}
+      - DB_PASSWORD: ${DB_PASSWORD}
+      - DB_NAME: ${DB_NAME}
+    networks:
+      - hls
+
+  networks: 
+    hls: 
+      name: ${NETWORK}
+      driver: ${DRIVER}
+
+  volumes:
+    db-data:
+    db-logs:
