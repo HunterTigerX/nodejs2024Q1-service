@@ -36,7 +36,6 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
       - db-logs:/var/log/postgresql
-      - app-logs:/var/log/postgresql/app
     environment:
       PORT: ${PORT}
       DB_HOST: ${DB_HOST}

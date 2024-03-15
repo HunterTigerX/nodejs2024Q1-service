@@ -10,7 +10,7 @@
     "build": "nest build",
     "typeorm": "npm run build && npx typeorm -d dist/data.source.js",
     "migration:generate": "npm run typeorm -- migration:generate",
-    "migration:generatemigration": "node src/clearMigrations.ts && npm run migration:generate -- src/migrations/bootstrap",
+    "migration:migrate": "node src/clearMigrations.ts && npm run migration:generate -- src/migrations/bootstrap && npm run lint",
     "migration:run": "npm run typeorm -- migration:run",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:dev": "nest start --watch",
@@ -18,7 +18,9 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --testMatch \"<rootDir>/*.spec.ts\" --noStackTrace --runInBand",
     "docker:up": "docker-compose up",
-    "scan:vuln": "npm audit --fix"
+    "scan:vuln": "npm audit --fix",
+    "docker:scoutdb": "docker scout cves huntertigerx/postgresql:latest",
+    "docker:scoutapp": "docker scout cves huntertigerx/homelibrary:latest"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.3",

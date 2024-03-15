@@ -5,4 +5,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 EXPOSE ${PORT}
-CMD ["npm", "run", "start:dev", ">>", "/var/log/app/app.log"]
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+CMD ["/app/entrypoint.sh"]
