@@ -13,6 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
   synchronize: false,
   entities: [join(__dirname, '**', '*.entity.{ts,js}')],
   migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
+  migrationsTransactionMode: 'each',
 };
 
 const dataSource = new DataSource(dataSourceOptions);

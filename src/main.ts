@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+import * as dotenv from 'dotenv';
+dotenv.config();
 // import swaggerJSDoc from 'swagger-jsdoc';
 // import swaggerUi from 'swagger-ui-express';
 // not working with import
@@ -16,7 +18,7 @@ async function bootstrap() {
       version: '1.0.0',
       description: 'Home music library service',
     },
-    host: 'localhost:5000',
+    host: `${process.env.DB_HOST}:${+process.env.PORT}`,
     basePath: '/docs',
   };
 
@@ -29,7 +31,7 @@ async function bootstrap() {
 
   app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  await app.listen(5000);
+  await app.listen(`${+process.env.PORT}`);
 }
 
 bootstrap();
