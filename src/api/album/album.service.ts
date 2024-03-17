@@ -82,20 +82,20 @@ export class AlbumService {
       if (favAlbumToDelete) {
         await this.favAlbumsRepository.remove(favAlbumToDelete);
       }
-      const trackToChange = await this.tracksRepository.findOne({
-        where: { albumId: id },
-      });
-      if (trackToChange) {
-        trackToChange.albumId = null;
-        await this.tracksRepository.save(trackToChange);
-      }
-      const favTrackToChange = await this.favTracksRepository.findOne({
-        where: { albumId: id },
-      });
-      if (favTrackToChange) {
-        favTrackToChange.albumId = null;
-        await this.favTracksRepository.save(favTrackToChange);
-      }
+      // const trackToChange = await this.tracksRepository.findOne({
+      //   where: { albumId: id },
+      // });
+      // if (trackToChange) {
+      //   trackToChange.albumId = null;
+      //   await this.tracksRepository.save(trackToChange);
+      // }
+      // const favTrackToChange = await this.favTracksRepository.findOne({
+      //   where: { albumId: id },
+      // });
+      // if (favTrackToChange) {
+      //   favTrackToChange.albumId = null;
+      //   await this.favTracksRepository.save(favTrackToChange);
+      // }
       successDeletion();
     } else {
       notFound();

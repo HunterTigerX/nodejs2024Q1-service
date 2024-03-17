@@ -12,10 +12,3 @@ export class Artists {
   @Column()
   grammy: boolean;
 }
-
-/*
-Artist DTO {
-  name: string;
-  grammy: boolean;
-}
-*/

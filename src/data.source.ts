@@ -12,7 +12,10 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DB_NAME,
   synchronize: false,
   entities: [join(__dirname, '**', '*.entity.{ts,js}')],
-  migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
+  migrations: [
+    join(__dirname, 'migrations.js'),
+    join(__dirname, 'migrations', '*.js'),
+  ],
   migrationsTransactionMode: 'each',
 };
 

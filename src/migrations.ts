@@ -1,5 +1,11 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
+console.log('in migrations22');
 export class CreateDatabase1629304292361 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -43,6 +49,14 @@ export class CreateDatabase1629304292361 implements MigrationInterface {
           { name: 'artistId', type: 'uuid', isNullable: true },
           { name: 'year', type: 'int', isNullable: false },
         ],
+        foreignKeys: [
+          new TableForeignKey({
+            columnNames: ['artistId'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'artists',
+            onDelete: 'SET NULL',
+          }),
+        ],
       }),
       true,
     );
@@ -56,6 +70,20 @@ export class CreateDatabase1629304292361 implements MigrationInterface {
           { name: 'artistId', type: 'uuid', isNullable: true },
           { name: 'albumId', type: 'uuid', isNullable: true },
           { name: 'duration', type: 'int', isNullable: false },
+        ],
+        foreignKeys: [
+          new TableForeignKey({
+            columnNames: ['albumId'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'albums',
+            onDelete: 'SET NULL',
+          }),
+          new TableForeignKey({
+            columnNames: ['artistId'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'artists',
+            onDelete: 'SET NULL',
+          }),
         ],
       }),
       true,

@@ -90,37 +90,37 @@ export class ArtistService {
         await this.favArtistsRepository.remove(favArtistToDelete);
       }
 
-      const albumToChange = await this.albumsRepository.findOne({
-        where: { artistId: id },
-      });
-      if (albumToChange) {
-        albumToChange.artistId = null;
-        await this.albumsRepository.save(albumToChange);
-      }
-      const trackToChange = await this.tracksRepository.findOne({
-        where: { artistId: id },
-      });
+      // const albumToChange = await this.albumsRepository.findOne({
+      //   where: { artistId: id },
+      // });
+      // if (albumToChange) {
+      //   albumToChange.artistId = null;
+      //   await this.albumsRepository.save(albumToChange);
+      // }
+      // const trackToChange = await this.tracksRepository.findOne({
+      //   where: { artistId: id },
+      // });
 
-      if (trackToChange) {
-        trackToChange.artistId = null;
-        await this.tracksRepository.save(trackToChange);
-      }
+      // if (trackToChange) {
+      //   trackToChange.artistId = null;
+      //   await this.tracksRepository.save(trackToChange);
+      // }
 
-      const favAlbumToChange = await this.favAlbumsRepository.findOne({
-        where: { artistId: id },
-      });
-      if (favAlbumToChange) {
-        favAlbumToChange.artistId = null;
-        await this.favAlbumsRepository.save(favAlbumToChange);
-      }
+      // const favAlbumToChange = await this.favAlbumsRepository.findOne({
+      //   where: { artistId: id },
+      // });
+      // if (favAlbumToChange) {
+      //   favAlbumToChange.artistId = null;
+      //   await this.favAlbumsRepository.save(favAlbumToChange);
+      // }
 
-      const favTrackToChange = await this.favTracksRepository.findOne({
-        where: { artistId: id },
-      });
-      if (favTrackToChange) {
-        favTrackToChange.artistId = null;
-        await this.favTracksRepository.save(favTrackToChange);
-      }
+      // const favTrackToChange = await this.favTracksRepository.findOne({
+      //   where: { artistId: id },
+      // });
+      // if (favTrackToChange) {
+      //   favTrackToChange.artistId = null;
+      //   await this.favTracksRepository.save(favTrackToChange);
+      // }
 
       successDeletion();
     } else {
