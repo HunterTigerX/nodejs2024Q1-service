@@ -24,9 +24,6 @@ npm install
 docker-compose up
 ```
 
-After starting the app on port (5000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:5000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
 To change the port, open .env file and change the PORT value.
 Database port is 6000 and to change the port, open .env file and change the DB_PORT value. 
 
