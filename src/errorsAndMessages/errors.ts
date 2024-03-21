@@ -34,9 +34,22 @@ export function somethingExists(
   );
 }
 
+export function tokenError() {
+  throw new HttpException(
+    'Refresh token is invalid or expired',
+    HttpStatus.FORBIDDEN, // 403
+  );
+}
 export function wrongPassword() {
   throw new HttpException(
     'Password mismatch. Old password is wrong',
+    HttpStatus.FORBIDDEN, // 403
+  );
+}
+
+export function wrongPasswordLogin() {
+  throw new HttpException(
+    'No user with this login in the database or the password is wrong',
     HttpStatus.FORBIDDEN, // 403
   );
 }

@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 import * as dotenv from 'dotenv';
+import { ValidationPipe } from '@nestjs/common';
 dotenv.config();
 // import swaggerJSDoc from 'swagger-jsdoc';
 // import swaggerUi from 'swagger-ui-express';
@@ -30,7 +31,7 @@ async function bootstrap() {
   const swaggerSpec = swaggerJSDoc(options);
 
   app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(`${+process.env.PORT}`);
 }
 

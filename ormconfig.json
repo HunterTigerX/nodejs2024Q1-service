@@ -1,7 +1,7 @@
 {
     "type": "postgres",
-    "host": "host.docker.internal",
-    "port": 6000,
+    "host": "localhost",
+    "port": 4000,
     "username": "postgres",
     "password": "postgres",
     "database": "homelibrary",

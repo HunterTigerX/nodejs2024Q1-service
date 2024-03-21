@@ -47,3 +47,10 @@
 --   "albumId" UUID,
 --   "duration" INT NOT NULL
 -- );
+
+-- CREATE TABLE auth (
+--   "login" VARCHAR(255) PRIMARY KEY,
+--   "password" VARCHAR(255) NOT NULL,
+--   "accessToken" VARCHAR(255),
+--   "refreshToken" VARCHAR(255)
+-- );

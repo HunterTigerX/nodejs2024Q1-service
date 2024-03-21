@@ -8,6 +8,7 @@ import { TrackModule } from './api/track/track.module';
 import { UserModule } from './api/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './data.source';
+import { SignupModule } from './api/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { dataSourceOptions } from './data.source';
     ArtistModule,
     FavModule,
     TrackModule,
+    SignupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,7 +5,6 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-console.log('in migrations22');
 export class CreateDatabase1629304292361 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -127,6 +126,34 @@ export class CreateDatabase1629304292361 implements MigrationInterface {
       }),
       true,
     );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'auth',
+        columns: [
+          { name: 'login', type: 'varchar', length: '255', isPrimary: true },
+          {
+            name: 'password',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'accessToken',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'refreshToken',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+        ],
+      }),
+      true,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -137,5 +164,6 @@ export class CreateDatabase1629304292361 implements MigrationInterface {
     await queryRunner.dropTable('favartists');
     await queryRunner.dropTable('artists');
     await queryRunner.dropTable('users');
+    await queryRunner.dropTable('auth');
   }
 }
