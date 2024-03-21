@@ -11,7 +11,11 @@ import {
   wrongPasswordLogin,
 } from 'src/errorsAndMessages/errors';
 import * as dotenv from 'dotenv';
-import { IRefreshToken, IUserTokens } from './interface/auth.interfaces';
+import {
+  IRefreshToken,
+  ITokens,
+  IUserTokens,
+} from './interface/auth.interfaces';
 import { randomUUID } from 'crypto';
 dotenv.config();
 
@@ -75,7 +79,7 @@ export class AuthService {
     await this.usersRepository2.save(newUser);
     const copy = JSON.parse(JSON.stringify(newUser));
     delete copy.password;
-    return returnData(copy, 'create');
+    returnData(copy, 'create');
   }
 
   async logUser(loginUserDto: ICreateUserDto) {
@@ -103,6 +107,7 @@ export class AuthService {
   }
 
   async refresh(refreshToken: IRefreshToken) {
+    let newTokens: ITokens;
     try {
       const isValidRefresh = this.jwtService.verify(refreshToken.refreshToken, {
         secret: refreshSecretKey,
@@ -111,7 +116,10 @@ export class AuthService {
       const tokenExpireAt = isValidRefresh.exp;
       const tokenLife = (tokenExpireAt - tokenCreatedAt) / (60 * 60);
       if (tokenLife === 1) {
-        console.log('This is an access token, not refresh token');
+        tokenError('This is not a refresh token');
+      }
+      if (tokenExpireAt < (new Date().getTime() + 1) / 1000) {
+        return tokenError('');
       }
       const user = await this.usersRepository2.findOne({
         where: {
@@ -119,10 +127,11 @@ export class AuthService {
         },
       });
       if (user) {
-        return this.getTokens(isValidRefresh.login, user.id);
+        newTokens = await this.getTokens(isValidRefresh.login, user.id);
       }
     } catch (err) {
-      tokenError();
+      tokenError('Refresh token is invalid or expired');
     }
+    returnData(newTokens, 'update');
   }
 }

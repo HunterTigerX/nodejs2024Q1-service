@@ -34,9 +34,9 @@ export function somethingExists(
   );
 }
 
-export function tokenError() {
+export function tokenError(text: string) {
   throw new HttpException(
-    'Refresh token is invalid or expired',
+    text,
     HttpStatus.FORBIDDEN, // 403
   );
 }
