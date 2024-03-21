@@ -1,8 +1,10 @@
+import { UUID } from 'crypto';
 import { CreateUserDto } from '../validation/signupDTO';
 
 export interface IUserTokens extends CreateUserDto {
-  accessToken: string;
-  refreshToken: string;
+  id: UUID | null;
+  accessToken: string | null;
+  refreshToken: string | null;
 }
 
 export interface IRefreshToken {

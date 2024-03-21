@@ -11,8 +11,8 @@ import {
   wrongPasswordLogin,
 } from 'src/errorsAndMessages/errors';
 import * as dotenv from 'dotenv';
-import { ConfigService } from '@nestjs/config';
-import { IRefreshToken } from './interface/auth.interfaces';
+import { IRefreshToken, IUserTokens } from './interface/auth.interfaces';
+import { randomUUID } from 'crypto';
 dotenv.config();
 
 const accessSecretKey = process.env.JWT_SECRET_ACCESS_KEY;
@@ -26,14 +26,13 @@ export class AuthService {
     @InjectRepository(Auth)
     private readonly usersRepository2: Repository<Auth>,
     private jwtService: JwtService,
-    private configService: ConfigService,
   ) {}
 
-  async getTokens(login: string) {
+  async getTokens(login: string, userId: any) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          // sub: userId,
+          userId,
           login,
         },
         {
@@ -43,7 +42,7 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         {
-          // sub: userId,
+          userId,
           login,
         },
         {
@@ -52,7 +51,6 @@ export class AuthService {
         },
       ),
     ]);
-
     return {
       accessToken,
       refreshToken,
@@ -65,27 +63,19 @@ export class AuthService {
     const encryptedPassword = await bcrypt.hash(createUserDto.password, salt);
     createUserDto.password = encryptedPassword;
 
-    const user = this.usersRepository2.create(createUserDto);
-    await this.usersRepository2.save(user);
-    return 'dto is valid, user was created';
+    const newUUID = randomUUID();
+    const newUser: IUserTokens = {
+      login: createUserDto.login,
+      password: createUserDto.password,
+      id: newUUID,
+      accessToken: null,
+      refreshToken: null,
+    };
 
-    // const userExists = await this.usersRepository2.findOne({
-    //     where: { login: createUserDto.login },
-    //   });
-    //   if (userExists) {
-    //     throw error that user exists
-    //   }
-    /*
-    Server should answer with status code 201 and corresponding message if dto is valid
-    Server should answer with status code 400 and corresponding message if dto is invalid 
-    (no login or password, or they are not a strings)
-    Once POST /auth/signup accepts password property, it is replaced with hash (for example, 
-    you can use bcrypt package or its equivalent like bcryptjs) for password encryption, no 
-    raw passwords should be in database (NB! Password should remain hashed after any operation with service).
-    */
-    /*
-
-   */
+    await this.usersRepository2.save(newUser);
+    const copy = JSON.parse(JSON.stringify(newUser));
+    delete copy.password;
+    return returnData(copy, 'create');
   }
 
   async logUser(loginUserDto: ICreateUserDto) {
@@ -98,7 +88,11 @@ export class AuthService {
         userExists.password,
       );
       if (isPasswordValid) {
-        const tokens = await this.getTokens(loginUserDto.login);
+        const userId = userExists.id;
+        const tokens = await this.getTokens(loginUserDto.login, userId);
+        userExists.accessToken = tokens.accessToken;
+        userExists.refreshToken = tokens.refreshToken;
+        await this.usersRepository2.save(userExists);
         returnData(tokens, 'update');
       } else {
         wrongPasswordLogin();
@@ -106,14 +100,6 @@ export class AuthService {
     } else {
       wrongPasswordLogin();
     }
-
-    /*
-    Server should answer with status code 200 and tokens if dto is valid
-    Server should answer with status code 400 and corresponding message if dto is invalid 
-    (no login or password, or they are not a strings)
-    Server should answer with status code 403 and corresponding message if authentication failed 
-    (no user with such login, password doesn't match actual one, etc.)
-    */
   }
 
   async refresh(refreshToken: IRefreshToken) {
@@ -127,23 +113,16 @@ export class AuthService {
       if (tokenLife === 1) {
         console.log('This is an access token, not refresh token');
       }
-      const user = this.usersRepository2.findOne({
+      const user = await this.usersRepository2.findOne({
         where: {
           login: isValidRefresh.login,
         },
       });
       if (user) {
-        return this.getTokens(isValidRefresh.login);
+        return this.getTokens(isValidRefresh.login, user.id);
       }
     } catch (err) {
       tokenError();
     }
-
-    /*
-    Server should answer with status code 200 and tokens in body if dto is valid
-    Server should answer with status code 401 and corresponding message if dto is invalid (no refreshToken in body)
-    Server should answer with status code 403 and corresponding message if authentication failed 
-    (Refresh token is invalid or expired)
-    */
   }
 }

@@ -6,21 +6,25 @@ import {
   Put,
   Param,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { checkUUID, notFound } from 'src/errorsAndMessages/errors';
 import { isTrackDataValid } from './object-validation/track-validation';
 import { ITrack } from './interface/track.interface';
 import { TrackService } from './track.service';
+import { AccessTokenGuard } from '../guards/tokensGuards';
 
 @Controller()
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
-
+  @UseGuards(AccessTokenGuard)
   @Get('track')
   getAllTracks() {
     return this.trackService.getAllTracks();
   }
+
+  @UseGuards(AccessTokenGuard)
   @Get('track/:id')
   getTrackById(@Param('id') id: string | UUID) {
     checkUUID(id);
@@ -30,11 +34,15 @@ export class TrackController {
     }
     return notFound();
   }
+
+  @UseGuards(AccessTokenGuard)
   @Post('track')
   addTrack(@Body() data: ITrack) {
     isTrackDataValid(data);
     return this.trackService.addTrack(data);
   }
+
+  @UseGuards(AccessTokenGuard)
   @Put('track/:id')
   changeTrackInDb(@Param('id') id: UUID, @Body() data: ITrack) {
     checkUUID(id);
@@ -44,6 +52,8 @@ export class TrackController {
     isTrackDataValid(data);
     return this.trackService.updateTrack(id, data);
   }
+
+  @UseGuards(AccessTokenGuard)
   @Delete('track/:id')
   deleteTrack(@Param('id') id: UUID) {
     checkUUID(id);

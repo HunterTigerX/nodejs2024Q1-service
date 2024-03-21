@@ -11,6 +11,8 @@ import {
   FavTracks,
 } from '../favorites/entities/favorites.entity';
 import { Albums } from '../album/entities/album.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
 
 @Module({
   imports: [
@@ -21,8 +23,9 @@ import { Albums } from '../album/entities/album.entity';
     TypeOrmModule.forFeature([FavAlbums]),
     TypeOrmModule.forFeature([FavArtists]),
     TypeOrmModule.forFeature([FavTracks]),
+    JwtModule.register({}),
   ],
   controllers: [ArtistController],
-  providers: [ArtistService],
+  providers: [ArtistService, AccessTokenStrategy, RefreshTokenStrategy],
 })
 export class ArtistModule {}

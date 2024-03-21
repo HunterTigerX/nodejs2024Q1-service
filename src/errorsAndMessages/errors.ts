@@ -40,6 +40,15 @@ export function tokenError() {
     HttpStatus.FORBIDDEN, // 403
   );
 }
+
+export function noAuthHeader(text: string) {
+  throw new HttpException(
+    // 'Header in the request is absent or invalid or ',
+    text,
+    HttpStatus.UNAUTHORIZED, // 403
+  );
+}
+
 export function wrongPassword() {
   throw new HttpException(
     'Password mismatch. Old password is wrong',
