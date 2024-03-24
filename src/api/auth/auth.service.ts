@@ -5,20 +5,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ICreateUserDto } from '../user/interface/user.interface';
 import { Auth } from './entities/auth.entity';
-import {
-  returnData,
-  tokenError,
-  wrongPasswordLogin,
-} from 'src/errorsAndMessages/errors';
-import * as dotenv from 'dotenv';
+import { Errors, Messages } from 'src/errorsAndMessages/errors';
 import {
   IRefreshToken,
   ITokens,
   IUserTokens,
 } from './interface/auth.interfaces';
 import { randomUUID } from 'crypto';
+import * as dotenv from 'dotenv';
 dotenv.config();
 
+const errors = new Errors();
+const message = new Messages();
 const accessSecretKey = process.env.JWT_SECRET_ACCESS_KEY;
 const refreshSecretKey = process.env.JWT_SECRET_REFRESH_KEY;
 const accessTokenExpire = process.env.TOKEN_ACCESS_EXPIRE_TIME;
@@ -79,7 +77,7 @@ export class AuthService {
     await this.usersRepository2.save(newUser);
     const copy = JSON.parse(JSON.stringify(newUser));
     delete copy.password;
-    returnData(copy, 'create');
+    message.returnCreatedData(copy);
   }
 
   async logUser(loginUserDto: ICreateUserDto) {
@@ -97,12 +95,16 @@ export class AuthService {
         userExists.accessToken = tokens.accessToken;
         userExists.refreshToken = tokens.refreshToken;
         await this.usersRepository2.save(userExists);
-        returnData(tokens, 'update');
+        message.returnUpdatedData(tokens);
       } else {
-        wrongPasswordLogin();
+        errors.forbiddenError(
+          'No user with this login in the database or the password is wrong',
+        );
       }
     } else {
-      wrongPasswordLogin();
+      errors.forbiddenError(
+        'No user with this login in the database or the password is wrong',
+      );
     }
   }
 
@@ -116,10 +118,10 @@ export class AuthService {
       const tokenExpireAt = isValidRefresh.exp;
       const tokenLife = (tokenExpireAt - tokenCreatedAt) / (60 * 60);
       if (tokenLife === 1) {
-        tokenError('This is not a refresh token');
+        errors.forbiddenError('This is not a refresh token');
       }
       if (tokenExpireAt < (new Date().getTime() + 1) / 1000) {
-        return tokenError('');
+        errors.forbiddenError('Token is expired');
       }
       const user = await this.usersRepository2.findOne({
         where: {
@@ -130,8 +132,8 @@ export class AuthService {
         newTokens = await this.getTokens(isValidRefresh.login, user.id);
       }
     } catch (err) {
-      tokenError('Refresh token is invalid or expired');
+      errors.forbiddenError('Refresh token is invalid or expired');
     }
-    returnData(newTokens, 'update');
+    message.returnUpdatedData(newTokens);
   }
 }

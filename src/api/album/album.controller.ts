@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { AlbumService } from 'src/api/album/album.service';
-import { checkUUID } from 'src/errorsAndMessages/errors';
 import { IAlbum } from './interface/album.interface';
 import { AccessTokenGuard } from '../guards/tokensGuards';
-
+import { Errors } from 'src/errorsAndMessages/errors';
+const errors = new Errors();
 @Controller()
 export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
@@ -26,7 +26,7 @@ export class AlbumController {
   @UseGuards(AccessTokenGuard)
   @Get('album/:id')
   getAlbumById(@Param('id') id: string | UUID) {
-    checkUUID(id);
+    errors.checkUUID(id);
     return this.albumService.getAlbumById(id as UUID);
   }
 
@@ -39,9 +39,9 @@ export class AlbumController {
   @UseGuards(AccessTokenGuard)
   @Put('album/:id')
   changeAlbumsInDb(@Param('id') id: UUID, @Body() data: IAlbum) {
-    checkUUID(id);
+    errors.checkUUID(id);
     if (data.id) {
-      checkUUID(id);
+      errors.checkUUID(id);
     }
     return this.albumService.updateAlbum(id, data);
   }
@@ -49,7 +49,7 @@ export class AlbumController {
   @UseGuards(AccessTokenGuard)
   @Delete('album/:id')
   deleteAlbum(@Param('id') id: UUID) {
-    checkUUID(id);
+    errors.checkUUID(id);
     return this.albumService.deleteAlbum(id);
   }
 }

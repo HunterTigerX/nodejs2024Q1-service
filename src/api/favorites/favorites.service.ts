@@ -4,16 +4,14 @@ import { UUID } from 'crypto';
 import { Repository } from 'typeorm';
 import { FavAlbums, FavArtists, FavTracks } from './entities/favorites.entity';
 import { Tracks } from '../track/entities/track.entity';
-import {
-  addedToFav,
-  alreadyFav,
-  noIdInDbWhenFav,
-  notFound,
-  successDeletion,
-} from 'src/errorsAndMessages/errors';
-
 import { Artists } from '../artist/entities/artist.entity';
 import { Albums } from '../album/entities/album.entity';
+import { Errors, Messages } from 'src/errorsAndMessages/errors';
+import { LoggingService } from '../logger/logger.service';
+
+const errors = new Errors();
+const message = new Messages();
+
 @Injectable()
 export class FavService {
   constructor(
@@ -29,6 +27,7 @@ export class FavService {
     private readonly tracksRepository: Repository<Tracks>,
     @InjectRepository(FavTracks)
     private readonly favTracksRepository: Repository<FavTracks>,
+    private readonly logger: LoggingService,
   ) {}
 
   async getAllFavorites() {
@@ -56,14 +55,14 @@ export class FavService {
         },
       });
       if (existingFavoriteTracks[0]) {
-        alreadyFav('track');
+        errors.unprocessableEntityError('track');
       } else {
         const favTracks = this.favTracksRepository.create(doTrackExistInDb[0]);
         await this.favTracksRepository.save(favTracks);
-        return addedToFav(await this.favTracksRepository.find());
+        message.returnCreatedData(await this.favTracksRepository.find());
       }
     } else {
-      noIdInDbWhenFav('track');
+      errors.unprocessableEntityError('track');
     }
   }
 
@@ -80,14 +79,14 @@ export class FavService {
         },
       });
       if (existingFavoriteAlbums[0]) {
-        alreadyFav('album');
+        errors.unprocessableEntityError('album');
       } else {
         const favAlbums = this.favAlbumsRepository.create(doAlbumExistInDb[0]);
         await this.favAlbumsRepository.save(favAlbums);
-        return addedToFav(await this.favAlbumsRepository.find());
+        message.returnCreatedData(await this.favAlbumsRepository.find());
       }
     } else {
-      noIdInDbWhenFav('album');
+      errors.unprocessableEntityError('album');
     }
   }
 
@@ -104,16 +103,16 @@ export class FavService {
         },
       });
       if (existingFavoriteArtists[0]) {
-        alreadyFav('artist');
+        errors.unprocessableEntityError('artist');
       } else {
         const favAlbums = this.favArtistsRepository.create(
           doArtistExistInDb[0],
         );
         await this.favArtistsRepository.save(favAlbums);
-        return addedToFav(await this.favArtistsRepository.find());
+        message.returnCreatedData(await this.favArtistsRepository.find());
       }
     } else {
-      noIdInDbWhenFav('artist');
+      errors.unprocessableEntityError('artist');
     }
   }
 
@@ -123,9 +122,9 @@ export class FavService {
     });
     if (favTrackToDelete) {
       await this.favTracksRepository.remove(favTrackToDelete);
-      successDeletion();
+      message.successDeletion();
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 
@@ -135,9 +134,9 @@ export class FavService {
     });
     if (favArtistToDelete) {
       await this.favArtistsRepository.remove(favArtistToDelete);
-      successDeletion();
+      message.successDeletion();
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 
@@ -147,9 +146,9 @@ export class FavService {
     });
     if (favAlbumToDelete) {
       await this.favAlbumsRepository.remove(favAlbumToDelete);
-      successDeletion();
+      message.successDeletion();
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 }

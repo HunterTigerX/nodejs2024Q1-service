@@ -6,21 +6,20 @@ import {
   IUpdatePasswordDto,
 } from './interface/user.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  notFound,
-  returnData,
-  successDeletion,
-  wrongPassword,
-} from 'src/errorsAndMessages/errors';
 import { Repository } from 'typeorm';
 import { Users } from './entities/user.entity';
 import { isUserDataValid } from './object-validation/user-validation';
+import { Errors, Messages } from 'src/errorsAndMessages/errors';
+import { LoggingService } from '../logger/logger.service';
+const errors = new Errors();
+const message = new Messages();
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(Users)
     private readonly usersRepository: Repository<Users>,
+    private readonly logger: LoggingService,
   ) {}
   async getAllUsers() {
     const users = await this.usersRepository.find();
@@ -35,7 +34,7 @@ export class UserService {
     if (user) {
       return user;
     }
-    return notFound();
+    errors.notFound();
   }
 
   async addUser(data: ICreateUserDto) {
@@ -54,7 +53,7 @@ export class UserService {
 
     const copy = JSON.parse(JSON.stringify(user));
     delete copy.password;
-    return returnData(copy, 'create');
+    message.returnCreatedData(copy);
   }
 
   async updateUser(id: UUID, data: IUpdatePasswordDto) {
@@ -72,12 +71,12 @@ export class UserService {
         await this.usersRepository.save(userToChange);
         const copy = JSON.parse(JSON.stringify(userToChange));
         delete copy.password;
-        return returnData(copy, 'update');
+        message.returnUpdatedData(copy);
       } else {
-        wrongPassword();
+        errors.forbiddenError('Password mismatch. Old password is wrong');
       }
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 
@@ -87,9 +86,9 @@ export class UserService {
     });
     if (userToDelete) {
       await this.usersRepository.remove(userToDelete);
-      successDeletion();
+      message.successDeletion();
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 }

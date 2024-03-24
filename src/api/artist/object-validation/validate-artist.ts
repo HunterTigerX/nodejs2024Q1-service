@@ -1,6 +1,6 @@
-import { badBody } from 'src/errorsAndMessages/errors';
 import { IArtist } from '../interface/artist.interface';
-
+import { Errors } from 'src/errorsAndMessages/errors';
+const errors = new Errors();
 export function isArtistDataValid(obj: IArtist) {
   const isValid =
     'name' in obj &&
@@ -8,6 +8,6 @@ export function isArtistDataValid(obj: IArtist) {
     typeof obj.name === 'string' &&
     typeof obj.grammy === 'boolean';
   if (!isValid) {
-    badBody();
+    errors.badBody();
   }
 }

@@ -1,8 +1,9 @@
-import { badBody } from 'src/errorsAndMessages/errors';
 import {
   IUpdatePasswordDto,
   ICreateUserDto,
 } from '../interface/user.interface';
+import { Errors } from 'src/errorsAndMessages/errors';
+const errors = new Errors();
 
 export function isUserDataValid(
   obj: IUpdatePasswordDto | ICreateUserDto,
@@ -24,6 +25,6 @@ export function isUserDataValid(
       typeof obj.newPassword === 'string';
   }
   if (!isValid) {
-    badBody();
+    errors.badBody();
   }
 }

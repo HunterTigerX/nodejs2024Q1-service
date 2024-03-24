@@ -9,11 +9,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { checkUUID, notFound } from 'src/errorsAndMessages/errors';
 import { isTrackDataValid } from './object-validation/track-validation';
 import { ITrack } from './interface/track.interface';
 import { TrackService } from './track.service';
 import { AccessTokenGuard } from '../guards/tokensGuards';
+import { Errors } from 'src/errorsAndMessages/errors';
+const errors = new Errors();
 
 @Controller()
 export class TrackController {
@@ -27,12 +28,12 @@ export class TrackController {
   @UseGuards(AccessTokenGuard)
   @Get('track/:id')
   getTrackById(@Param('id') id: string | UUID) {
-    checkUUID(id);
+    errors.checkUUID(id);
     const result = this.trackService.getTrackById(id as UUID);
     if (result) {
       return result;
     }
-    return notFound();
+    errors.notFound();
   }
 
   @UseGuards(AccessTokenGuard)
@@ -45,9 +46,9 @@ export class TrackController {
   @UseGuards(AccessTokenGuard)
   @Put('track/:id')
   changeTrackInDb(@Param('id') id: UUID, @Body() data: ITrack) {
-    checkUUID(id);
+    errors.checkUUID(id);
     if (data.id) {
-      checkUUID(id);
+      errors.checkUUID(id);
     }
     isTrackDataValid(data);
     return this.trackService.updateTrack(id, data);
@@ -56,7 +57,7 @@ export class TrackController {
   @UseGuards(AccessTokenGuard)
   @Delete('track/:id')
   deleteTrack(@Param('id') id: UUID) {
-    checkUUID(id);
+    errors.checkUUID(id);
     return this.trackService.deleteTrack(id);
   }
 }

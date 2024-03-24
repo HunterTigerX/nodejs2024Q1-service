@@ -1,5 +1,6 @@
-import { badBody } from 'src/errorsAndMessages/errors';
 import { ITrack } from '../interface/track.interface';
+import { Errors } from 'src/errorsAndMessages/errors';
+const errors = new Errors();
 
 export function isTrackDataValid(obj: ITrack) {
   const isValid =
@@ -12,6 +13,6 @@ export function isTrackDataValid(obj: ITrack) {
     'duration' in obj &&
     typeof obj.duration === 'number';
   if (!isValid) {
-    badBody();
+    errors.badBody();
   }
 }

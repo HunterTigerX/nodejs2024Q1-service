@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { LoggingService } from '../logger/logger.service';
 
 @Module({
   imports: [
@@ -14,6 +15,11 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({}),
   ],
   controllers: [UserController],
-  providers: [UserService, AccessTokenStrategy, RefreshTokenStrategy],
+  providers: [
+    UserService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    LoggingService,
+  ],
 })
 export class UserModule {}

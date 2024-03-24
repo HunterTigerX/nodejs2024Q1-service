@@ -9,12 +9,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { checkUUID, notFound } from 'src/errorsAndMessages/errors';
 import { ICreateUserDto, IUpdatePasswordDto } from './interface/user.interface';
 import { UserService } from './user.service';
 import { isUserDataValid } from './object-validation/user-validation';
 import { AccessTokenGuard } from '../guards/tokensGuards';
-
+import { Errors } from 'src/errorsAndMessages/errors';
+const errors = new Errors();
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -27,12 +27,12 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   @Get('user/:id')
   getUserById(@Param('id') id: string | UUID) {
-    checkUUID(id);
+    errors.checkUUID(id);
     const result = this.userService.getUserById(id as UUID);
     if (result) {
       return result;
     }
-    return notFound();
+    errors.notFound();
   }
 
   @UseGuards(AccessTokenGuard)
@@ -45,7 +45,7 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   @Put('user/:id')
   changeUserInDb(@Param('id') id: UUID, @Body() data: IUpdatePasswordDto) {
-    checkUUID(id);
+    errors.checkUUID(id);
     isUserDataValid(data, 'userUpdate');
     return this.userService.updateUser(id, data);
   }
@@ -53,7 +53,7 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   @Delete('user/:id')
   deleteUser(@Param('id') id: UUID) {
-    checkUUID(id);
+    errors.checkUUID(id);
     return this.userService.deleteUser(id);
   }
 }

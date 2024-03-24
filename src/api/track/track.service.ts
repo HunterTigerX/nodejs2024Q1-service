@@ -3,14 +3,13 @@ import { UUID, randomUUID } from 'crypto';
 import { ITrack } from './interface/track.interface';
 import { Tracks } from './entities/track.entity';
 import { Repository } from 'typeorm';
-import {
-  notFound,
-  returnData,
-  successDeletion,
-} from 'src/errorsAndMessages/errors';
 import { isTrackDataValid } from './object-validation/track-validation';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FavTracks } from '../favorites/entities/favorites.entity';
+import { Errors, Messages } from 'src/errorsAndMessages/errors';
+import { LoggingService } from '../logger/logger.service';
+const errors = new Errors();
+const message = new Messages();
 
 @Injectable()
 export class TrackService {
@@ -19,6 +18,7 @@ export class TrackService {
     private readonly tracksRepository: Repository<Tracks>,
     @InjectRepository(FavTracks)
     private readonly favTracksRepository: Repository<FavTracks>,
+    private readonly logger: LoggingService,
   ) {}
 
   async getAllTracks() {
@@ -32,7 +32,7 @@ export class TrackService {
     if (track) {
       return track;
     }
-    return notFound();
+    errors.notFound();
   }
   async addTrack(data: ITrack) {
     isTrackDataValid(data);
@@ -46,7 +46,7 @@ export class TrackService {
     };
     const tracks = this.tracksRepository.create(newTrack);
     await this.tracksRepository.save(tracks);
-    returnData(newTrack, 'create');
+    message.returnCreatedData(newTrack);
   }
   async updateTrack(id: UUID, data: ITrack) {
     isTrackDataValid(data);
@@ -59,9 +59,9 @@ export class TrackService {
       trackToChange.albumId = data.albumId;
       trackToChange.duration = data.duration;
       await this.tracksRepository.save(trackToChange);
-      returnData(trackToChange, 'update');
+      message.returnUpdatedData(trackToChange);
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 
@@ -77,9 +77,9 @@ export class TrackService {
       if (favTrackToDelete) {
         await this.favTracksRepository.remove(favTrackToDelete);
       }
-      successDeletion();
+      message.successDeletion();
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 }

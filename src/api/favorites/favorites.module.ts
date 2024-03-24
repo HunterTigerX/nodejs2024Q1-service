@@ -9,6 +9,7 @@ import { Albums } from '../album/entities/album.entity';
 import { Artists } from '../artist/entities/artist.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
+import { LoggingService } from '../logger/logger.service';
 
 @Module({
   imports: [
@@ -19,9 +20,15 @@ import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
     TypeOrmModule.forFeature([Tracks]),
     TypeOrmModule.forFeature([Albums]),
     TypeOrmModule.forFeature([Artists]),
+    
     JwtModule.register({}),
   ],
   controllers: [FavController],
-  providers: [FavService, AccessTokenStrategy, RefreshTokenStrategy],
+  providers: [
+    FavService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    LoggingService,
+  ],
 })
 export class FavModule {}

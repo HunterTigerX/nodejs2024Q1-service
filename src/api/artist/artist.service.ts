@@ -4,11 +4,6 @@ import { IArtist } from './interface/artist.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Artists } from './entities/artist.entity';
-import {
-  notFound,
-  returnData,
-  successDeletion,
-} from 'src/errorsAndMessages/errors';
 import { isArtistDataValid } from './object-validation/validate-artist';
 import { Tracks } from '../track/entities/track.entity';
 import { Albums } from '../album/entities/album.entity';
@@ -17,6 +12,10 @@ import {
   FavArtists,
   FavTracks,
 } from '../favorites/entities/favorites.entity';
+import { Errors, Messages } from 'src/errorsAndMessages/errors';
+import { LoggingService } from '../logger/logger.service';
+const errors = new Errors();
+const message = new Messages();
 
 @Injectable()
 export class ArtistService {
@@ -33,6 +32,7 @@ export class ArtistService {
     private readonly tracksRepository: Repository<Tracks>,
     @InjectRepository(FavTracks)
     private readonly favTracksRepository: Repository<FavTracks>,
+    private readonly logger: LoggingService,
   ) {}
 
   async getAllArtists() {
@@ -49,7 +49,7 @@ export class ArtistService {
     };
     const artists = this.artistsRepository.create(newArtist);
     await this.artistsRepository.save(artists);
-    returnData(newArtist, 'create');
+    message.returnCreatedData(newArtist);
   }
 
   async getArtistById(id: UUID) {
@@ -60,7 +60,7 @@ export class ArtistService {
     if (artist) {
       return artist;
     }
-    return notFound();
+    errors.notFound();
   }
 
   async updateArtist(id: UUID, data: IArtist) {
@@ -72,9 +72,9 @@ export class ArtistService {
       artistToChange.name = data.name;
       artistToChange.grammy = data.grammy;
       await this.artistsRepository.save(artistToChange);
-      returnData(artistToChange, 'update');
+      message.returnUpdatedData(artistToChange);
     } else {
-      notFound();
+      errors.notFound();
     }
   }
   async deleteArtist(id: UUID) {
@@ -122,9 +122,9 @@ export class ArtistService {
       //   await this.favTracksRepository.save(favTrackToChange);
       // }
 
-      successDeletion();
+      message.successDeletion();
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 }

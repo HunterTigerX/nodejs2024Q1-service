@@ -13,6 +13,7 @@ import {
 import { Tracks } from '../track/entities/track.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
+import { LoggingService } from '../logger/logger.service';
 
 @Module({
   imports: [
@@ -26,6 +27,11 @@ import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
     JwtModule.register({}),
   ],
   controllers: [AlbumController],
-  providers: [AlbumService, AccessTokenStrategy, RefreshTokenStrategy],
+  providers: [
+    AlbumService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    LoggingService,
+  ],
 })
 export class AlbumModule {}

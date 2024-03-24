@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { Auth } from './entities/auth.entity';
 import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
 import * as dotenv from 'dotenv';
+import { LoggingService } from '../logger/logger.service';
 dotenv.config();
 
 @Module({
@@ -16,6 +17,11 @@ dotenv.config();
     TypeOrmModule.forFeature([Auth]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
+  providers: [
+    AuthService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    LoggingService,
+  ],
 })
 export class SignupModule {}

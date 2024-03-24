@@ -2,16 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { UUID, randomUUID } from 'crypto';
 import { IAlbum } from './interface/album.interface';
 import { isAlbumDataValid } from './object-validation/validate-album';
-import {
-  notFound,
-  returnData,
-  successDeletion,
-} from 'src/errorsAndMessages/errors';
 import { Albums } from './entities/album.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FavAlbums, FavTracks } from '../favorites/entities/favorites.entity';
 import { Tracks } from '../track/entities/track.entity';
+import { Errors, Messages } from 'src/errorsAndMessages/errors';
+import { LoggingService } from '../logger/logger.service';
+const errors = new Errors();
+const message = new Messages();
 
 @Injectable()
 export class AlbumService {
@@ -24,6 +23,7 @@ export class AlbumService {
     private readonly tracksRepository: Repository<Tracks>,
     @InjectRepository(FavTracks)
     private readonly favTracksRepository: Repository<FavTracks>,
+    private readonly logger: LoggingService,
   ) {}
 
   async getAllAlbums() {
@@ -38,7 +38,7 @@ export class AlbumService {
     if (album) {
       return album;
     }
-    return notFound();
+    errors.notFound();
   }
   async addAlbum(data: IAlbum) {
     isAlbumDataValid(data);
@@ -51,7 +51,7 @@ export class AlbumService {
     };
     const albums = this.albumsRepository.create(newAlbum);
     await this.albumsRepository.save(albums);
-    returnData(newAlbum, 'create');
+    message.returnCreatedData(newAlbum);
   }
 
   async updateAlbum(id: UUID, data: IAlbum) {
@@ -64,9 +64,9 @@ export class AlbumService {
       albumToChange.year = data.year;
       albumToChange.artistId = data.artistId;
       await this.albumsRepository.save(albumToChange);
-      returnData(albumToChange, 'update');
+      message.returnUpdatedData(albumToChange);
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 
@@ -96,9 +96,9 @@ export class AlbumService {
       //   favTrackToChange.albumId = null;
       //   await this.favTracksRepository.save(favTrackToChange);
       // }
-      successDeletion();
+      message.successDeletion();
     } else {
-      notFound();
+      errors.notFound();
     }
   }
 }

@@ -1,6 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { noAuthHeader } from 'src/errorsAndMessages/errors';
+import { Errors } from 'src/errorsAndMessages/errors';
+
+const errors = new Errors();
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
@@ -20,13 +22,13 @@ export class AccessTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
     if (!authHeader) {
-      noAuthHeader('Header in the request is absent');
+      errors.errorUnathorized('Header in the request is absent');
       return false;
     }
 
     const parts = authHeader.split(' ');
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
-      noAuthHeader(
+      errors.errorUnathorized(
         'Header in the request is invalid or doesn’t follow Bearer scheme',
       );
       return false;
@@ -38,7 +40,7 @@ export class AccessTokenGuard implements CanActivate {
       });
       return true;
     } catch (err) {
-      noAuthHeader('Access token has expired');
+      errors.errorUnathorized('Access token has expired');
       return false;
     }
   }

@@ -13,6 +13,7 @@ import {
 } from '../favorites/entities/favorites.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
+import { LoggingService } from '../logger/logger.service';
 
 @Module({
   imports: [
@@ -23,9 +24,15 @@ import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
     TypeOrmModule.forFeature([FavAlbums]),
     TypeOrmModule.forFeature([FavArtists]),
     TypeOrmModule.forFeature([FavTracks]),
+    
     JwtModule.register({}),
   ],
   controllers: [TrackController],
-  providers: [TrackService, AccessTokenStrategy, RefreshTokenStrategy],
+  providers: [
+    TrackService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    LoggingService,
+  ],
 })
 export class TrackModule {}

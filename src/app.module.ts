@@ -9,6 +9,7 @@ import { UserModule } from './api/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './data.source';
 import { SignupModule } from './api/auth/auth.module';
+import { LoggerModule } from './api/logger/logger.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SignupModule } from './api/auth/auth.module';
     FavModule,
     TrackModule,
     SignupModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

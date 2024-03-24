@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
-import { noTokenPresented } from 'src/errorsAndMessages/errors';
+import { Errors } from 'src/errorsAndMessages/errors';
 import { IRefreshToken } from '../interface/auth.interfaces';
+
+const errors = new Errors();
 
 export class CreateUserDto {
   @ApiProperty({
@@ -23,6 +25,6 @@ export class CreateUserDto {
 
 export function validateRefreshToken(token: IRefreshToken) {
   if (!token.refreshToken) {
-    noTokenPresented();
+    errors.errorUnathorized(`No token was presented`);
   }
 }
