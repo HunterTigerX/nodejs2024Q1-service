@@ -21,6 +21,7 @@ npm install
 ## Running application
 
 ```
+at first start docker, then run in the console
 docker-compose up
 ```
 
@@ -28,7 +29,7 @@ To change the port, open .env file and change the PORT value.
 Database port is 6000 and to change the port, open .env file and change the DB_PORT value. 
 
 ## Testing
-After application is running open new terminal and enter:
+After docker and application is running open new terminal and enter:
 
 To run all tests without authorization
 
