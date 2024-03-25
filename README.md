@@ -21,11 +21,13 @@ npm install
 ## Running application
 
 ```
-at first start docker, then run in the console
-docker-compose up
+At first, start docker
+Don't forget to purge / clean data in docker in troubleshoot menu
+Then run in the console
+docker-compose up or npm run docker:up
 ```
 
-To change the port, open .env file and change the PORT value.
+App port is 5000. To change the app port, open .env file and change the PORT value.
 Database port is 6000 and to change the port, open .env file and change the DB_PORT value. 
 
 ## Testing
@@ -70,15 +72,16 @@ npm run format
 ```
 
 ## Docker vulnerability scanner
+You need to be logged in in docker app to run vulnerability tests.
 To scan docker images for vulnerabilities you can run 2 commands:
 
-To scan database image for vulnerability, open new terminal and enter:
+1. To scan database image for vulnerability, open new terminal and enter:
 
 ```
 npm run docker:scoutdb
 ```
 
-To scan home library image for vulnerability, open new terminal and enter:
+2. To scan home library image for vulnerability, open new terminal and enter:
 
 ```
 npm run docker:scoutapp
