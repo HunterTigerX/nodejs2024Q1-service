@@ -89,6 +89,9 @@ To attempt to automatically fix detected vulnerabilities in a project and its de
 ```
 npm run scan:vuln
 ```
+## Important Comments
+- 1.1 Tests folder was accidentally changed when I replaced a capitalization of a few names in all files in the project and noticed that test folder was changed too late, but then replaced files back with the originals test folder, so all tests are original but have commits in them. This is not prohibited in part 2 and part 3 since there are no forefit like `-670 Changes in tests` which we had in part 1. You can double check if you want that all test are original and good by replacing test folder with you own test folder.
+
 ## Comments about Containerization, Docker
 - 1.1 `Readme.md` has instruction how to run application
 - 1.2 You are currently reading readme.md with all important instructions
