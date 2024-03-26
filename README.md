@@ -9,7 +9,7 @@
 ## Downloading
 
 ```
-git clone https://github.com/HunterTigerX/nodejs2024Q1-service/tree/develop_part_2
+git clone https://github.com/HunterTigerX/nodejs2024Q1-service.git
 ```
 
 ## Installing NPM modules
