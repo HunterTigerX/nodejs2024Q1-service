@@ -20,7 +20,6 @@ import { LoggingService } from '../logger/logger.service';
     TypeOrmModule.forFeature([Tracks]),
     TypeOrmModule.forFeature([Albums]),
     TypeOrmModule.forFeature([Artists]),
-    
     JwtModule.register({}),
   ],
   controllers: [FavController],

@@ -21,6 +21,7 @@ export class UserService {
     private readonly usersRepository: Repository<Users>,
     private readonly logger: LoggingService,
   ) {}
+
   async getAllUsers() {
     const users = await this.usersRepository.find();
     return users;
@@ -32,7 +33,7 @@ export class UserService {
     });
 
     if (user) {
-      return user;
+      return message.returnUpdatedData(user);
     }
     errors.notFound();
   }

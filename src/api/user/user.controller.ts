@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   UseGuards,
+  UseFilters,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { ICreateUserDto, IUpdatePasswordDto } from './interface/user.interface';
@@ -14,17 +15,21 @@ import { UserService } from './user.service';
 import { isUserDataValid } from './object-validation/user-validation';
 import { AccessTokenGuard } from '../guards/tokensGuards';
 import { Errors } from 'src/errorsAndMessages/errors';
+import { CustomExceptionFilter } from '../filter/exception-filter.service';
 const errors = new Errors();
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
   @UseGuards(AccessTokenGuard)
+  @UseFilters(CustomExceptionFilter)
   @Get('user')
   getAllUsers() {
     return this.userService.getAllUsers();
   }
 
   @UseGuards(AccessTokenGuard)
+  @UseFilters(CustomExceptionFilter)
   @Get('user/:id')
   getUserById(@Param('id') id: string | UUID) {
     errors.checkUUID(id);
@@ -36,6 +41,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @UseFilters(CustomExceptionFilter)
   @Post('user')
   addUser(@Body() data: ICreateUserDto) {
     isUserDataValid(data, 'userCreate');
@@ -43,6 +49,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @UseFilters(CustomExceptionFilter)
   @Put('user/:id')
   changeUserInDb(@Param('id') id: UUID, @Body() data: IUpdatePasswordDto) {
     errors.checkUUID(id);
@@ -51,6 +58,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @UseFilters(CustomExceptionFilter)
   @Delete('user/:id')
   deleteUser(@Param('id') id: UUID) {
     errors.checkUUID(id);

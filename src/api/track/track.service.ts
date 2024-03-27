@@ -25,15 +25,18 @@ export class TrackService {
     const tracks = await this.tracksRepository.find();
     return tracks;
   }
+
   async getTrackById(id: UUID) {
     const track = await this.tracksRepository.findOne({
       where: { id },
     });
     if (track) {
+      message.returnUpdatedData(track);
       return track;
     }
     errors.notFound();
   }
+
   async addTrack(data: ITrack) {
     isTrackDataValid(data);
     const newUUID = randomUUID(); // If there is an id in body it doesn't matter
@@ -48,6 +51,7 @@ export class TrackService {
     await this.tracksRepository.save(tracks);
     message.returnCreatedData(newTrack);
   }
+
   async updateTrack(id: UUID, data: ITrack) {
     isTrackDataValid(data);
     const trackToChange = await this.tracksRepository.findOne({

@@ -14,6 +14,7 @@ import {
 import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy, RefreshTokenStrategy } from '../jwt.strategy';
 import { LoggingService } from '../logger/logger.service';
+import { CustomExceptionFilter } from '../filter/exception-filter.service';
 
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import { LoggingService } from '../logger/logger.service';
     TypeOrmModule.forFeature([FavAlbums]),
     TypeOrmModule.forFeature([FavArtists]),
     TypeOrmModule.forFeature([FavTracks]),
-    
-    JwtModule.register({}),
+    JwtModule.register({
+      global: true,
+    }),
   ],
   controllers: [TrackController],
   providers: [
@@ -33,6 +35,7 @@ import { LoggingService } from '../logger/logger.service';
     AccessTokenStrategy,
     RefreshTokenStrategy,
     LoggingService,
+    CustomExceptionFilter,
   ],
 })
 export class TrackModule {}

@@ -5,17 +5,18 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 export class Errors {
   checkUUID(id: string | UUID) {
     if (!isUUID(id, 4)) {
-      throw new HttpException(
-        'ID is not in UUID format',
-        HttpStatus.BAD_REQUEST,
-      ); // 400
+      const message = 'ID is not in UUID format';
+      const errorCode = HttpStatus.BAD_REQUEST;
+      throw new HttpException(message, errorCode); // 400
     }
   }
 
   badBody() {
+    const message = 'Your body does not contain required fields';
+    const errorCode = HttpStatus.BAD_REQUEST;
     throw new HttpException(
-      'Your body does not contain required fields',
-      HttpStatus.BAD_REQUEST, // 400
+      message,
+      errorCode, // 400
     );
   }
 
@@ -24,51 +25,60 @@ export class Errors {
     if (string === 'user') {
       param = 'login';
     }
+    const message = `${string} with this ${param} already exists in our DB`;
+    const errorCode = HttpStatus.UNAUTHORIZED;
     throw new HttpException(
-      `${string} with this ${param} already exists in our DB`,
-      HttpStatus.UNAUTHORIZED, // 401
+      message,
+      errorCode, // 401
     );
   }
 
   errorUnathorized(text: string) {
+    const errorCode = HttpStatus.UNAUTHORIZED;
     throw new HttpException(
       text,
-      HttpStatus.UNAUTHORIZED, // 401
+      errorCode, // 401
     );
   }
 
   forbiddenError(text: string) {
+    const errorCode = HttpStatus.FORBIDDEN;
     throw new HttpException(
       text,
-      HttpStatus.FORBIDDEN, // 403
+      errorCode, // 403
     );
   }
 
   notFound() {
+    const message = 'this ID was not found in our database';
+    const errorCode = HttpStatus.NOT_FOUND;
     throw new HttpException(
-      'this ID was not found in our database',
-      HttpStatus.NOT_FOUND, // 404
+      message,
+      errorCode, // 404
     );
   }
 
   unprocessableEntityError(operation: 'artist' | 'album' | 'track') {
-    throw new HttpException(
-      `${operation} with this id is already in favorites or there is no ${operation} with this id in our database`,
-      HttpStatus.UNPROCESSABLE_ENTITY,
-    ); // 422
+    const message = `${operation} with this id is already in favorites or there is no ${operation} with this id in our database`;
+    const errorCode = HttpStatus.UNPROCESSABLE_ENTITY;
+
+    throw new HttpException(message, errorCode); // 422
   }
 }
 
 export class Messages {
   returnCreatedData(data: any) {
-    throw new HttpException(data, HttpStatus.CREATED); // 201
+    const responseCode = HttpStatus.CREATED;
+    throw new HttpException(data, responseCode); // 201
   }
 
   returnUpdatedData(data: any) {
-    throw new HttpException(data, HttpStatus.OK); // 200
+    const responseCode = HttpStatus.OK;
+    throw new HttpException(data, responseCode); // 200
   }
 
   successDeletion() {
-    throw new HttpException('Success', HttpStatus.NO_CONTENT); // 204
+    const responseCode = HttpStatus.NO_CONTENT;
+    throw new HttpException('Success', responseCode); // 204
   }
 }

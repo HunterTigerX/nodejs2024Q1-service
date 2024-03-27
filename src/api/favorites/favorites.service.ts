@@ -34,12 +34,12 @@ export class FavService {
     const favAlbums = await this.favAlbumsRepository.find();
     const favArtists = await this.favArtistsRepository.find();
     const favTracks = await this.favTracksRepository.find();
-
-    return {
+    const result = {
       artists: favArtists,
       albums: favAlbums,
       tracks: favTracks,
     };
+    return result;
   }
 
   async addFavTrack(id: UUID) {

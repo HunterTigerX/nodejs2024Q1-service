@@ -24,7 +24,6 @@ import { LoggingService } from '../logger/logger.service';
     TypeOrmModule.forFeature([FavAlbums]),
     TypeOrmModule.forFeature([FavArtists]),
     TypeOrmModule.forFeature([FavTracks]),
-
     JwtModule.register({}),
   ],
   controllers: [ArtistController],

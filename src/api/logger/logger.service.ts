@@ -3,6 +3,7 @@ import { promises as fsPromises } from 'fs';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const separator = path.sep;
 dotenv.config();
@@ -13,8 +14,30 @@ const maxFileSize = +process.env.MAX_FILE_SIZE;
 export class LoggingService extends ConsoleLogger {
   private readonly logger = new Logger('LoggingService');
 
-  async rotateLogFile(currentFilename: string) {
-    const newName = `${Date.now()}.txt`;
+  async createDirs(path: string) {
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+  }
+
+  formatDate() {
+    const timestamp = Date.now();
+    const date = new Date(timestamp);
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+    const hours = ('0' + date.getHours()).slice(-2);
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+    const seconds = ('0' + date.getSeconds()).slice(-2);
+    const milliseconds = ('0' + date.getMilliseconds())
+      .slice(-4)
+      .padEnd(5, '0');
+    const formattedDate = `${year}-${month}-${day}-${hours}-${minutes}-${seconds}-${milliseconds}`;
+    return formattedDate;
+  }
+
+  async rotateLogFile(currentFilename: string): Promise<string> {
+    const newName = `${this.formatDate()}.log`;
     const targetFileName = join(__dirname, '..', '..', '..', currentFilename);
     let newFileName: any = join(
       __dirname,
@@ -25,80 +48,76 @@ export class LoggingService extends ConsoleLogger {
     ).split(separator);
     newFileName[newFileName.length - 1] = newName;
     newFileName = newFileName.join(separator);
-    await fsPromises.rename(targetFileName, newFileName);
-    await fsPromises.writeFile(currentFilename, '', { flag: 'w' });
-    // 'w': Open file for writing. The file is created (if it does not exist) or truncated (if it exists).
+    try {
+      await fs.promises.access(targetFileName, fs.constants.F_OK);
+      await fsPromises.rename(targetFileName, newFileName);
+      await fsPromises.writeFile(currentFilename, '', { flag: 'w' });
+      // 'w': Open file for writing. The file is created (if it does not exist) or truncated (if it exists).
+    } catch (err) {}
+
+    return Promise.resolve('Success');
   }
 
-  async asyncWriteFile(data: any, type: string) {
+  async asyncWriteFile(data: any, type: string): Promise<string> {
+    this.createDirs(join('src', 'logs', type));
     const targetFile = join('src', 'logs', type, 'logs.txt');
+    await fsPromises.writeFile(targetFile, ``, { flag: 'a' });
+
     const stats = await fsPromises.stat(targetFile).catch(() => ({ size: 0 }));
 
     if (stats.size / 1024 >= maxFileSize) {
       await this.rotateLogFile(targetFile);
     }
 
-    try {
+    if (typeof data !== 'string') {
       const logDateTime = new Date(Date.now()).toString();
       data.date = logDateTime;
-      const result = `${data.date}, url - ${data.url}, query parameters - ${JSON.stringify(data.queryParams)}, body - ${JSON.stringify(data.body)}\n`;
-      await fsPromises.writeFile(targetFile, result, { flag: 'a' });
-      // 'a': Open file for appending. The file is created if it does not exist.
-    } catch (err) {
-      this.error(err);
+      data = JSON.stringify(data);
     }
+
+    await fsPromises.writeFile(targetFile, `${data}\n`, { flag: 'a' });
+    // 'a': Open file for appending. The file is created if it does not exist.
+    return Promise.resolve('Success');
   }
 
-  log(message: any, ...optionalParams: any[]) {
+  async log(message: any, ...optionalParams: any[]) {
     if (logLevel >= 1) {
-      if (typeof message !== 'string') {
-        this.asyncWriteFile(message, 'logs');
-      }
+      await this.asyncWriteFile(message, 'logs');
       super.log(message, ...optionalParams);
     }
   }
 
-  fatal(message: any, ...optionalParams: any[]) {
+  async fatal(message: any, ...optionalParams: any[]) {
     if (logLevel >= 2) {
-      if (typeof message !== 'string') {
-        this.asyncWriteFile(message, 'fatals');
-      }
+      this.asyncWriteFile(message, 'fatals');
       super.fatal(message, ...optionalParams);
     }
   }
 
-  error(message: any, ...optionalParams: any[]) {
+  async error(message: any, ...optionalParams: any[]) {
     if (logLevel >= 3) {
-      if (typeof message !== 'string') {
-        this.asyncWriteFile(message, 'errors');
-      }
+      this.asyncWriteFile(message, 'errors');
       super.error(message, ...optionalParams);
     }
   }
 
-  warn(message: any, ...optionalParams: any[]) {
+  async warn(message: any, ...optionalParams: any[]) {
     if (logLevel >= 4) {
-      if (typeof message !== 'string') {
-        this.asyncWriteFile(message, 'warns');
-      }
+      this.asyncWriteFile(message, 'warns');
       super.warn(message, ...optionalParams);
     }
   }
 
-  debug(message: any, ...optionalParams: any[]) {
+  async debug(message: any, ...optionalParams: any[]) {
     if (logLevel >= 5) {
-      if (typeof message !== 'string') {
-        this.asyncWriteFile(message, 'debugs');
-      }
+      this.asyncWriteFile(message, 'debugs');
       super.debug(message, ...optionalParams);
     }
   }
 
-  verbose(message: any, optionalParams?: string) {
+  async verbose(message: any, optionalParams?: string) {
     if (logLevel >= 6) {
-      if (typeof message !== 'string') {
-        this.asyncWriteFile(message, 'verboses');
-      }
+      this.asyncWriteFile(message, 'verboses');
       super.verbose(message, ...optionalParams);
     }
   }

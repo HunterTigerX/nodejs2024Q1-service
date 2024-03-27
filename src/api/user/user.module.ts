@@ -12,7 +12,9 @@ import { LoggingService } from '../logger/logger.service';
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([Users]),
-    JwtModule.register({}),
+    JwtModule.register({
+      global: true,
+    }),
   ],
   controllers: [UserController],
   providers: [

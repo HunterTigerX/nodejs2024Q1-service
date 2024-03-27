@@ -58,6 +58,7 @@ export class ArtistService {
     });
 
     if (artist) {
+      message.returnUpdatedData(artist);
       return artist;
     }
     errors.notFound();

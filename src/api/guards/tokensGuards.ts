@@ -21,6 +21,7 @@ export class AccessTokenGuard implements CanActivate {
     const accessSecretKey = process.env.JWT_SECRET_ACCESS_KEY;
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
+
     if (!authHeader) {
       errors.errorUnathorized('Header in the request is absent');
       return false;

@@ -36,10 +36,11 @@ export class AlbumService {
       where: { id },
     });
     if (album) {
-      return album;
+      message.returnUpdatedData(album);
     }
     errors.notFound();
   }
+
   async addAlbum(data: IAlbum) {
     isAlbumDataValid(data);
     const newUUID = randomUUID(); // If there is an id in body it doesn't matter

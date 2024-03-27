@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, validateRefreshToken } from './validation/signupDTO';
 import { IRefreshToken } from './interface/auth.interfaces';
@@ -13,15 +13,7 @@ export class AuthController {
   ) {}
 
   @Post('/signup')
-  signUserUp(@Body() createUserDto: CreateUserDto, @Req() request: any) {
-    const queryParams = request.query;
-    const url = request.url;
-    const result = {
-      url,
-      queryParams,
-      body: createUserDto,
-    };
-    this.logger.log(result);
+  signUserUp(@Body() createUserDto: CreateUserDto) {
     return this.authService.signUser(createUserDto);
   }
 
